@@ -16,7 +16,7 @@ build/
 *.log
 npm-debug.log*
 
-# Editor / OS files
+# Editor / OS filesgit
 .vscode/
 .idea/
 .DS_Store
