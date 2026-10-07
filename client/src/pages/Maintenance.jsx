@@ -65,7 +65,7 @@ export default function Maintenance() {
     <div className="space-y-5">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Service operations</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-amber-300/80">Service operations</p>
           <h2 className="mt-1 font-display text-xl font-semibold tracking-[-0.02em] text-slate-900">{isTechnician ? 'My maintenance workload' : 'Maintenance schedule'}</h2>
           <p className="mt-1 max-w-2xl text-sm text-slate-500">{isTechnician ? 'Review assigned service work and update progress as maintenance is performed.' : 'Plan service work, assign registered technicians, and track completion.'}</p>
         </div>
@@ -73,9 +73,9 @@ export default function Maintenance() {
       </div>
 
       {isTechnician && (
-        <div className="flex items-start gap-3 rounded-2xl border border-cyan-200/80 bg-cyan-50/70 px-4 py-3.5 text-sm text-cyan-900">
-          <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white text-cyan-600 shadow-sm"><Wrench size={15} /></div>
-          <div><p className="font-semibold">Assigned maintenance only</p><p className="mt-0.5 text-xs leading-5 text-cyan-800/80">Task details and assignment are controlled by Admin. You can update status and work notes for tasks assigned to your account.</p></div>
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-400/15 bg-amber-400/[0.055] px-4 py-3.5 text-sm text-amber-200">
+          <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/15"><Wrench size={15} /></div>
+          <div><p className="font-semibold">Assigned maintenance only</p><p className="mt-0.5 text-xs leading-5 text-amber-200/65">Task details and assignment are controlled by Admin. You can update status and work notes for tasks assigned to your account.</p></div>
         </div>
       )}
 
@@ -98,12 +98,12 @@ export default function Maintenance() {
               <tbody className="divide-y divide-slate-100">
                 {items.map((task) => (
                   <tr key={task._id} className="aw-table-row">
-                    <td className="px-5 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600"><Wrench size={16} /></div><span className="font-semibold text-slate-800">{task.title}</span></div></td>
+                    <td className="px-5 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/15"><Wrench size={16} /></div><span className="font-semibold text-slate-800">{task.title}</span></div></td>
                     <td className="px-5 py-4 text-slate-600">{task.equipment?.name || '—'}</td>
                     <td className="px-5 py-4 text-slate-600">{formatDate(task.scheduledDate)}</td>
                     <td className="px-5 py-4 text-slate-600"><span className="flex items-center gap-1.5"><User size={13} className="text-slate-400" /> {task.assignedTo?.name || '—'}</span></td>
                     <td className="px-5 py-4"><StatusBadge value={task.priority} /></td><td className="px-5 py-4"><StatusBadge value={task.status} /></td>
-                    <td className="px-5 py-4"><div className="flex items-center justify-end gap-1"><Link to={`/maintenance/edit/${task._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-primary-50 hover:text-primary-600" title={isAdmin ? 'Edit task' : 'Update status'}>{isAdmin ? <Pencil size={15} /> : <RefreshCw size={15} />}</Link>{isAdmin && <button type="button" onClick={() => setDeleteTarget(task)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>}</div></td>
+                    <td className="px-5 py-4"><div className="flex items-center justify-end gap-1"><Link to={`/maintenance/edit/${task._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-amber-400/[0.08] hover:text-amber-300" title={isAdmin ? 'Edit task' : 'Update status'}>{isAdmin ? <Pencil size={15} /> : <RefreshCw size={15} />}</Link>{isAdmin && <button type="button" onClick={() => setDeleteTarget(task)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>}</div></td>
                   </tr>
                 ))}
               </tbody>

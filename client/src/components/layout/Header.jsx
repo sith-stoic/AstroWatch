@@ -24,9 +24,9 @@ const today = () =>
   new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
 const ROLE_META = {
-  Admin: { icon: ShieldCheck, classes: 'bg-violet-50 text-violet-700 ring-violet-100' },
-  Technician: { icon: Wrench, classes: 'bg-cyan-50 text-cyan-700 ring-cyan-100' },
-  Observer: { icon: Target, classes: 'bg-primary-50 text-primary-700 ring-primary-100' },
+  Admin: { icon: ShieldCheck, classes: 'bg-violet-400/10 text-violet-300 ring-violet-400/15' },
+  Technician: { icon: Wrench, classes: 'bg-amber-400/10 text-amber-300 ring-amber-400/15' },
+  Observer: { icon: Target, classes: 'bg-cyan-400/10 text-cyan-300 ring-cyan-400/15' },
 };
 
 export default function Header() {
@@ -44,25 +44,25 @@ export default function Header() {
     .toUpperCase();
 
   return (
-    <header className="relative z-10 flex min-h-[72px] flex-shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/85 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+    <header className="relative z-10 flex min-h-[74px] flex-shrink-0 items-center justify-between border-b border-white/[0.055] bg-[#080b13]/72 px-4 backdrop-blur-2xl sm:px-6 lg:px-8">
       <div className="min-w-0 py-3">
         <div className="flex items-center gap-3">
-          <h1 className="truncate text-lg font-semibold tracking-[-0.01em] text-slate-950 sm:text-xl">{title}</h1>
-          <span className={`hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ring-1 sm:inline-flex ${roleMeta.classes}`}>
+          <h1 className="truncate font-display text-lg font-semibold tracking-[-0.035em] text-slate-100 sm:text-xl">{title}</h1>
+          <span className={`hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] ring-1 sm:inline-flex ${roleMeta.classes}`}>
             <RoleIcon size={11} strokeWidth={2.2} /> {user?.role}
           </span>
         </div>
-        <p className="mt-0.5 hidden truncate text-xs text-slate-400 md:block">{subtitle} · {today()}</p>
+        <p className="mt-1 hidden truncate text-[11px] font-medium text-slate-600 md:block">{subtitle} <span className="mx-1.5 text-slate-800">•</span> {today()}</p>
       </div>
 
       <div className="ml-4 flex items-center gap-3">
         <div className="hidden text-right sm:block">
-          <p className="max-w-[180px] truncate text-sm font-semibold text-slate-800">{user?.name}</p>
-          <p className="text-[11px] text-slate-400">{user?.email}</p>
+          <p className="max-w-[180px] truncate text-sm font-semibold text-slate-200">{user?.name}</p>
+          <p className="mt-0.5 text-[10px] text-slate-600">{user?.email}</p>
         </div>
-        <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 to-violet-100 text-sm font-bold text-primary-700 ring-1 ring-primary-100">
+        <div className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-violet-300/[0.12] bg-gradient-to-br from-violet-400/15 to-cyan-400/[0.07] text-xs font-bold text-violet-200 shadow-[0_0_30px_rgba(139,92,246,.08)]">
           {initials}
-          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
+          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-[#080b13] bg-emerald-400" />
         </div>
       </div>
     </header>

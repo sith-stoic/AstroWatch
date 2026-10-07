@@ -17,13 +17,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             duration: 3500,
             style: {
               fontSize: '0.8125rem',
-              fontWeight: 600,
-              borderRadius: '0.875rem',
-              border: '1px solid rgba(226, 232, 240, 0.9)',
-              background: 'rgba(255, 255, 255, 0.96)',
-              color: '#334155',
-              boxShadow: '0 14px 36px rgba(15, 23, 42, 0.13)',
+              fontWeight: 700,
+              borderRadius: '0.9rem',
+              border: '1px solid rgba(148, 163, 184, 0.13)',
+              background: 'rgba(13, 17, 27, 0.96)',
+              color: '#E8ECF3',
+              boxShadow: '0 18px 46px rgba(0, 0, 0, 0.34)',
               padding: '12px 14px',
+              backdropFilter: 'blur(18px)',
+            },
+            success: {
+              iconTheme: { primary: '#34D399', secondary: '#0D111B' },
+            },
+            error: {
+              iconTheme: { primary: '#FB7185', secondary: '#0D111B' },
             },
           }}
         />

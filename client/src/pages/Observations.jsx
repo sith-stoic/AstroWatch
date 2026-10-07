@@ -64,14 +64,14 @@ export default function Observations() {
   return (
     <div className="space-y-5">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Observation planning</p><h2 className="mt-1 font-display text-xl font-semibold tracking-[-0.02em] text-slate-900">{isObserver ? 'My observing sessions' : 'Observation schedule'}</h2><p className="mt-1 max-w-2xl text-sm text-slate-500">{isObserver ? 'Review sessions assigned to your account and update observation progress.' : 'Coordinate targets, equipment availability, observers, and observing windows.'}</p></div>
+        <div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fuchsia-300/80">Observation planning</p><h2 className="mt-1 font-display text-xl font-semibold tracking-[-0.02em] text-slate-900">{isObserver ? 'My observing sessions' : 'Observation schedule'}</h2><p className="mt-1 max-w-2xl text-sm text-slate-500">{isObserver ? 'Review sessions assigned to your account and update observation progress.' : 'Coordinate targets, equipment availability, observers, and observing windows.'}</p></div>
         {isAdmin && <Link to="/observations/add" className="aw-btn-primary self-start sm:self-auto"><Plus size={16} /> Schedule Observation</Link>}
       </div>
 
       {isObserver && (
-        <div className="flex items-start gap-3 rounded-2xl border border-violet-200/80 bg-violet-50/70 px-4 py-3.5 text-sm text-violet-900">
-          <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white text-violet-600 shadow-sm"><Target size={15} /></div>
-          <div><p className="font-semibold">Assigned observations only</p><p className="mt-0.5 text-xs leading-5 text-violet-800/80">Scheduling and assignment are controlled by Admin. You can update status and notes for sessions assigned to your account.</p></div>
+        <div className="flex items-start gap-3 rounded-2xl border border-fuchsia-400/15 bg-fuchsia-400/[0.055] px-4 py-3.5 text-sm text-fuchsia-200">
+          <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-fuchsia-400/10 text-fuchsia-300 ring-1 ring-fuchsia-400/15"><Target size={15} /></div>
+          <div><p className="font-semibold">Assigned observations only</p><p className="mt-0.5 text-xs leading-5 text-fuchsia-200/65">Scheduling and assignment are controlled by Admin. You can update status and notes for sessions assigned to your account.</p></div>
         </div>
       )}
 
@@ -94,11 +94,11 @@ export default function Observations() {
               <tbody className="divide-y divide-slate-100">
                 {items.map((obs) => (
                   <tr key={obs._id} className="aw-table-row">
-                    <td className="px-5 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600"><Target size={16} /></div><span className="font-semibold text-slate-800">{obs.target}</span></div></td>
+                    <td className="px-5 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-fuchsia-400/10 text-fuchsia-300 ring-1 ring-fuchsia-400/15"><Target size={16} /></div><span className="font-semibold text-slate-800">{obs.target}</span></div></td>
                     <td className="px-5 py-4 text-slate-600">{obs.equipment?.name || '—'}</td>
                     <td className="px-5 py-4 text-slate-600"><span className="flex items-center gap-1.5 whitespace-nowrap"><Clock size={13} className="text-slate-400" />{formatDate(obs.date)} · {obs.startTime}–{obs.endTime}</span></td>
                     <td className="px-5 py-4 text-slate-600">{obs.observer?.name || '—'}</td><td className="px-5 py-4"><StatusBadge value={obs.priority} /></td><td className="px-5 py-4"><StatusBadge value={obs.status} /></td>
-                    <td className="px-5 py-4"><div className="flex items-center justify-end gap-1"><Link to={`/observations/edit/${obs._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-primary-50 hover:text-primary-600" title={isAdmin ? 'Edit observation' : 'Update status'}>{isAdmin ? <Pencil size={15} /> : <RefreshCw size={15} />}</Link>{isAdmin && <button type="button" onClick={() => setDeleteTarget(obs)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>}</div></td>
+                    <td className="px-5 py-4"><div className="flex items-center justify-end gap-1"><Link to={`/observations/edit/${obs._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-fuchsia-400/[0.08] hover:text-fuchsia-300" title={isAdmin ? 'Edit observation' : 'Update status'}>{isAdmin ? <Pencil size={15} /> : <RefreshCw size={15} />}</Link>{isAdmin && <button type="button" onClick={() => setDeleteTarget(obs)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>}</div></td>
                   </tr>
                 ))}
               </tbody>

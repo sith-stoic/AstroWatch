@@ -7,9 +7,21 @@ import AuthVisual from '../components/common/AuthVisual';
 import BrandMark from '../components/common/BrandMark';
 
 const DEMO_ROLES = [
-  { id: 'admin', label: 'Admin', icon: ShieldCheck, email: 'admin@astrowatch.com', password: 'admin123' },
-  { id: 'technician', label: 'Technician', icon: Wrench, email: 'technician@astrowatch.com', password: 'tech123' },
-  { id: 'observer', label: 'Observer', icon: Target, email: 'observer@astrowatch.com', password: 'observer123' },
+  {
+    id: 'admin', label: 'Admin', icon: ShieldCheck, email: 'admin@astrowatch.com', password: 'admin123',
+    classes: 'border-violet-200/70 bg-violet-50/70 text-violet-800 hover:border-violet-300 hover:bg-violet-100/75',
+    iconClasses: 'text-violet-600',
+  },
+  {
+    id: 'technician', label: 'Technician', icon: Wrench, email: 'technician@astrowatch.com', password: 'tech123',
+    classes: 'border-amber-200/80 bg-amber-50/75 text-amber-800 hover:border-amber-300 hover:bg-amber-100/75',
+    iconClasses: 'text-amber-600',
+  },
+  {
+    id: 'observer', label: 'Observer', icon: Target, email: 'observer@astrowatch.com', password: 'observer123',
+    classes: 'border-cyan-200/80 bg-cyan-50/75 text-cyan-900 hover:border-cyan-300 hover:bg-cyan-100/75',
+    iconClasses: 'text-cyan-700',
+  },
 ];
 
 export default function Login() {
@@ -52,29 +64,34 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="aw-auth-shell flex min-h-screen">
       <AuthVisual eyebrow="Mission-ready operations" />
 
-      <main className="relative flex min-h-screen flex-1 items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-12">
-        <div className="pointer-events-none absolute right-[-12%] top-[-12%] h-72 w-72 rounded-full bg-primary-100/70 blur-3xl" />
+      <main className="aw-auth-panel relative flex min-h-screen flex-1 items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-12">
+        <div className="pointer-events-none absolute right-[-14%] top-[-12%] h-80 w-80 rounded-full bg-violet-300/25 blur-[95px]" />
+        <div className="pointer-events-none absolute bottom-[-20%] left-[-8%] h-72 w-72 rounded-full bg-cyan-200/20 blur-[110px]" />
+
         <div className="aw-auth-enter relative z-10 w-full max-w-[470px]">
-          <div className="mb-7 lg:hidden">
+          <div className="mb-8 lg:hidden">
             <div className="flex items-center gap-3">
-              <BrandMark size={44} />
+              <BrandMark size={48} />
               <div>
-                <p className="font-display text-lg font-semibold text-slate-950">AstroWatch</p>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">Observatory Operations</p>
+                <p className="font-display text-lg font-semibold tracking-[-0.035em] text-[#1b1822]">AstroWatch</p>
+                <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8b8191]">Observatory Operations</p>
               </div>
             </div>
           </div>
 
           <div className="mb-7">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-primary-600">Secure access</p>
-            <h2 className="font-display text-3xl font-semibold tracking-[-0.035em] text-slate-950">Welcome back</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-500">Sign in to continue to your AstroWatch workspace.</p>
+            <div className="mb-3 flex items-center gap-2.5">
+              <span className="h-px w-7 bg-violet-500" />
+              <p className="aw-auth-kicker">Secure access</p>
+            </div>
+            <h2 className="font-display text-[2rem] font-semibold tracking-[-0.045em] text-[#1a1720]">Welcome back</h2>
+            <p className="mt-2.5 text-sm leading-6 text-[#746c78]">Sign in to continue to your observatory operations workspace.</p>
           </div>
 
-          <div className="aw-card border-slate-200/70 p-6 sm:p-7">
+          <div className="aw-card p-6 sm:p-7">
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
                 <label className="aw-label" htmlFor="email">Email address</label>
@@ -105,7 +122,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#99909f] transition-colors hover:bg-[#eee7dd] hover:text-[#4f4658]"
                     tabIndex={-1}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
@@ -123,29 +140,29 @@ export default function Login() {
             </form>
 
             <div className="my-6 flex items-center gap-3">
-              <span className="h-px flex-1 bg-slate-200" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Demo access</span>
-              <span className="h-px flex-1 bg-slate-200" />
+              <span className="h-px flex-1 bg-[#e2d9cc]" />
+              <span className="text-[9px] font-bold uppercase tracking-[0.19em] text-[#9b919e]">Demo access</span>
+              <span className="h-px flex-1 bg-[#e2d9cc]" />
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-              {DEMO_ROLES.map(({ id, label, icon: Icon }) => (
+              {DEMO_ROLES.map(({ id, label, icon: Icon, classes, iconClasses }) => (
                 <button
                   key={id}
                   type="button"
                   onClick={() => fillDemo(id)}
-                  className="group flex flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-2 py-3 text-[11px] font-semibold text-slate-600 transition-all hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700"
+                  className={`group flex flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-[10px] font-bold transition-all ${classes}`}
                 >
-                  <Icon size={16} className="text-slate-400 transition-colors group-hover:text-primary-600" />
+                  <Icon size={16} className={iconClasses} />
                   {label}
                 </button>
               ))}
             </div>
           </div>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-[#766e7b]">
             Need an operational account?{' '}
-            <Link to="/register" className="font-semibold text-primary-600 transition-colors hover:text-primary-700">Create one</Link>
+            <Link to="/register" className="font-bold text-violet-700 transition-colors hover:text-violet-900">Create one</Link>
           </p>
         </div>
       </main>

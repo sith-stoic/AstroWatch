@@ -129,17 +129,17 @@ export default function Dashboard() {
   return (
     <div className="space-y-7 pb-2">
       <Reveal>
-        <section className="relative overflow-hidden rounded-3xl border border-navy-800 bg-gradient-to-br from-navy-950 via-navy-900 to-[#172554] px-6 py-7 text-white shadow-[0_20px_55px_rgba(15,23,42,0.16)] sm:px-8 sm:py-8">
+        <section className="relative overflow-hidden rounded-3xl border border-violet-300/[0.10] bg-[linear-gradient(135deg,#12101f_0%,#0d111d_48%,#071820_100%)] px-6 py-7 text-white shadow-[0_20px_55px_rgba(15,23,42,0.16)] sm:px-8 sm:py-8">
           <div className="aw-grid-pattern pointer-events-none absolute inset-0 opacity-30" />
-          <div className="pointer-events-none absolute -right-12 -top-24 h-72 w-72 rounded-full bg-primary-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-28 left-[45%] h-56 w-56 rounded-full bg-violet-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -right-12 -top-24 h-72 w-72 rounded-full bg-violet-500/[0.16] blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-28 left-[45%] h-56 w-56 rounded-full bg-cyan-400/[0.08] blur-3xl" />
           <Radar size={170} strokeWidth={0.65} className="pointer-events-none absolute -right-5 top-1/2 hidden -translate-y-1/2 text-white/[0.045] sm:block" />
 
           <div className="relative flex flex-col justify-between gap-7 xl:flex-row xl:items-end">
             <div className="max-w-3xl">
               <div className="mb-3 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_0_5px_rgba(52,211,153,0.08)]" />
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-300">{roleCopy.eyebrow}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300/85">{roleCopy.eyebrow}</p>
               </div>
               <h2 className="font-display text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">
                 Good to see you, {firstName(user?.name)}. <span className="text-slate-400">{roleCopy.title}</span>
@@ -154,8 +154,8 @@ export default function Dashboard() {
                   to={to}
                   className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 active:scale-[0.98] ${
                     index === 0
-                      ? 'bg-white text-navy-900 hover:bg-slate-100'
-                      : 'border border-white/10 bg-white/[0.055] text-slate-200 hover:bg-white/[0.1]'
+                      ? 'bg-violet-300 text-[#15101d] shadow-[0_8px_28px_rgba(167,139,250,.2)] hover:bg-violet-200'
+                      : 'border border-white/[0.08] bg-white/[0.035] text-slate-300 hover:border-violet-300/20 hover:bg-violet-400/[0.07] hover:text-violet-200'
                   }`}
                 >
                   {role === 'Admin' && index === 0 ? <Plus size={14} /> : <Icon size={14} />}
@@ -204,7 +204,7 @@ export default function Dashboard() {
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Fleet health</p>
                 <h3 className="mt-1 text-sm font-semibold text-slate-800">Equipment Status Overview</h3>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300 ring-1 ring-indigo-400/15">
                 <Telescope size={17} />
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function Dashboard() {
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Latest changes</p>
                 <h3 className="mt-1 text-sm font-semibold text-slate-800">Recent Equipment Activity</h3>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-fuchsia-400/10 text-fuchsia-300 ring-1 ring-fuchsia-400/15">
                 <Activity size={17} />
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function Dashboard() {
                 {stats.upcomingObservationsList.map((obs) => (
                   <li key={obs._id} className="flex items-center justify-between gap-4 rounded-xl px-3 py-3.5 text-sm transition-colors hover:bg-slate-50/80">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-fuchsia-400/10 text-fuchsia-300 ring-1 ring-fuchsia-400/15">
                         <Target size={16} />
                       </div>
                       <div className="min-w-0">
@@ -298,7 +298,7 @@ export default function Dashboard() {
                 {stats.upcomingMaintenanceList.map((task) => (
                   <li key={task._id} className="flex items-center justify-between gap-4 rounded-xl px-3 py-3.5 text-sm transition-colors hover:bg-slate-50/80">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/15">
                         <Wrench size={16} />
                       </div>
                       <div className="min-w-0">

@@ -12,12 +12,20 @@ const ROLE_OPTIONS = [
     title: 'Technician',
     description: 'Handle assigned maintenance work and update equipment service progress.',
     icon: Wrench,
+    active: 'border-amber-300 bg-amber-50/85 ring-2 ring-amber-200/70',
+    iconActive: 'bg-amber-500 text-white',
+    titleActive: 'text-amber-900',
+    dot: 'bg-amber-500',
   },
   {
     role: 'Observer',
     title: 'Observer',
     description: 'Handle assigned observing sessions and update observation progress.',
     icon: Target,
+    active: 'border-cyan-300 bg-cyan-50/85 ring-2 ring-cyan-200/70',
+    iconActive: 'bg-cyan-600 text-white',
+    titleActive: 'text-cyan-950',
+    dot: 'bg-cyan-500',
   },
 ];
 
@@ -70,29 +78,33 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="aw-auth-shell flex min-h-screen">
       <AuthVisual eyebrow="Join the operations team" />
 
-      <main className="relative flex min-h-screen flex-1 items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-10">
-        <div className="pointer-events-none absolute right-[-12%] top-[-12%] h-72 w-72 rounded-full bg-violet-100/60 blur-3xl" />
+      <main className="aw-auth-panel relative flex min-h-screen flex-1 items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-10">
+        <div className="pointer-events-none absolute right-[-12%] top-[-12%] h-72 w-72 rounded-full bg-violet-300/25 blur-[100px]" />
+        <div className="pointer-events-none absolute bottom-[-12%] left-[-12%] h-72 w-72 rounded-full bg-amber-200/20 blur-[110px]" />
         <div className="aw-auth-enter relative z-10 w-full max-w-[560px]">
-          <div className="mb-6 lg:hidden">
+          <div className="mb-7 lg:hidden">
             <div className="flex items-center gap-3">
-              <BrandMark size={44} />
+              <BrandMark size={48} />
               <div>
-                <p className="font-display text-lg font-semibold text-slate-950">AstroWatch</p>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">Observatory Operations</p>
+                <p className="font-display text-lg font-semibold tracking-[-0.035em] text-[#1b1822]">AstroWatch</p>
+                <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8b8191]">Observatory Operations</p>
               </div>
             </div>
           </div>
 
           <div className="mb-6">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-primary-600">Operational access</p>
-            <h2 className="font-display text-3xl font-semibold tracking-[-0.035em] text-slate-950">Create your workspace account</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-500">Choose the role that matches your responsibility inside the observatory.</p>
+            <div className="mb-3 flex items-center gap-2.5">
+              <span className="h-px w-7 bg-violet-500" />
+              <p className="aw-auth-kicker">Operational access</p>
+            </div>
+            <h2 className="font-display text-[2rem] font-semibold tracking-[-0.045em] text-[#1a1720]">Create your workspace account</h2>
+            <p className="mt-2.5 text-sm leading-6 text-[#746c78]">Choose the role that matches your responsibility inside the observatory.</p>
           </div>
 
-          <div className="aw-card border-slate-200/70 p-6 sm:p-7">
+          <div className="aw-card p-6 sm:p-7">
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
@@ -110,7 +122,7 @@ export default function Register() {
               <div>
                 <label className="aw-label">Operational role</label>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {ROLE_OPTIONS.map(({ role, title, description, icon: Icon }) => {
+                  {ROLE_OPTIONS.map(({ role, title, description, icon: Icon, active: activeClasses, iconActive, titleActive, dot }) => {
                     const active = form.role === role;
                     return (
                       <button
@@ -119,26 +131,26 @@ export default function Register() {
                         onClick={() => setForm({ ...form, role })}
                         className={`relative rounded-xl border p-4 text-left transition-all duration-200 ${
                           active
-                            ? 'border-primary-300 bg-primary-50 ring-2 ring-primary-100'
-                            : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                            ? activeClasses
+                            : 'border-[#ded5c9] bg-white/55 hover:border-[#cfc3b5] hover:bg-white/80'
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <span className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                          <span className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? iconActive : 'bg-[#ece5dc] text-[#756d78]'}`}>
                             <Icon size={17} />
                           </span>
                           <div>
-                            <p className={`text-sm font-semibold ${active ? 'text-primary-800' : 'text-slate-800'}`}>{title}</p>
-                            <p className="mt-1 text-[11px] leading-4 text-slate-500">{description}</p>
+                            <p className={`text-sm font-bold ${active ? titleActive : 'text-[#302b35]'}`}>{title}</p>
+                            <p className="mt-1 text-[10.5px] leading-4 text-[#7f7682]">{description}</p>
                           </div>
                         </div>
-                        <span className={`absolute right-3 top-3 h-2 w-2 rounded-full ${active ? 'bg-primary-500' : 'bg-slate-200'}`} />
+                        <span className={`absolute right-3 top-3 h-2 w-2 rounded-full ${active ? dot : 'bg-[#d9d0c6]'}`} />
                       </button>
                     );
                   })}
                 </div>
                 {errors.role && <p className="aw-error-text">{errors.role}</p>}
-                <p className="mt-2 text-[11px] text-slate-400">Administrator access is provisioned separately and cannot be created through public registration.</p>
+                <p className="mt-2 text-[10px] font-medium leading-4 text-[#998f9b]">Administrator access is provisioned separately and cannot be created through public registration.</p>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -146,7 +158,7 @@ export default function Register() {
                   <label className="aw-label" htmlFor="password">Password</label>
                   <div className="relative">
                     <input id="password" type={showPasswords ? 'text' : 'password'} className="aw-input pr-10" placeholder="Minimum 6 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-                    <button type="button" onClick={() => setShowPasswords((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700" tabIndex={-1}>
+                    <button type="button" onClick={() => setShowPasswords((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#99909f] hover:bg-[#eee7dd] hover:text-[#4f4658]" tabIndex={-1}>
                       {showPasswords ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
                   </div>
@@ -167,9 +179,9 @@ export default function Register() {
             </form>
           </div>
 
-          <p className="mt-5 text-center text-sm text-slate-500">
+          <p className="mt-5 text-center text-sm text-[#766e7b]">
             Already have access?{' '}
-            <Link to="/login" className="font-semibold text-primary-600 transition-colors hover:text-primary-700">Sign in</Link>
+            <Link to="/login" className="font-bold text-violet-700 transition-colors hover:text-violet-900">Sign in</Link>
           </p>
         </div>
       </main>

@@ -137,7 +137,7 @@ export default function ObservationForm() {
         <Link to="/observations" className="aw-back-link"><ArrowLeft size={15} /> Back to Observations</Link>
         <div className="aw-card overflow-hidden p-6 sm:p-7">
           <div className="mb-5 flex items-start gap-3">
-            <div className="rounded-xl bg-violet-50 p-2.5 text-violet-600 ring-1 ring-violet-100"><Target size={20} /></div>
+            <div className="rounded-xl bg-fuchsia-400/10 p-2.5 text-fuchsia-300 ring-1 ring-fuchsia-400/15"><Target size={20} /></div>
             <div>
               <h2 className="text-lg font-semibold text-slate-900">Update Assigned Observation</h2>
               <p className="text-sm text-slate-500">You can update only the observation status and notes. Scheduling details are controlled by Admin.</p>

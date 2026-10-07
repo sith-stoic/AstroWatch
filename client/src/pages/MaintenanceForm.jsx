@@ -122,7 +122,7 @@ export default function MaintenanceForm() {
         <Link to="/maintenance" className="aw-back-link"><ArrowLeft size={15} /> Back to Maintenance</Link>
         <div className="aw-card overflow-hidden p-6 sm:p-7">
           <div className="mb-5 flex items-start gap-3">
-            <div className="rounded-xl bg-cyan-50 p-2.5 text-cyan-600 ring-1 ring-cyan-100"><Wrench size={20} /></div>
+            <div className="rounded-xl bg-amber-400/10 p-2.5 text-amber-300 ring-1 ring-amber-400/15"><Wrench size={20} /></div>
             <div>
               <h2 className="text-lg font-semibold text-slate-900">Update Assigned Task</h2>
               <p className="text-sm text-slate-500">You can update only the status and notes for this assigned maintenance task.</p>

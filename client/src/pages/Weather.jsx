@@ -6,16 +6,16 @@ import Loader from '../components/common/Loader';
 import Reveal from '../components/common/Reveal';
 
 const SUITABILITY_STYLES = {
-  Suitable: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-  Moderate: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-  Unfavorable: 'bg-red-50 text-red-700 ring-1 ring-red-200',
+  Suitable: 'bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20',
+  Moderate: 'bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/20',
+  Unfavorable: 'bg-rose-400/10 text-rose-300 ring-1 ring-rose-400/20',
 };
 
 const METRIC_ITEMS = (weather) => [
-  { label: 'Feels Like', value: `${weather.feelsLike}°C`, icon: Thermometer, accent: 'bg-primary-50 text-primary-600' },
-  { label: 'Humidity', value: `${weather.humidity}%`, icon: Droplets, accent: 'bg-cyan-50 text-cyan-600' },
-  { label: 'Cloud Cover', value: `${weather.cloudCover}%`, icon: Cloud, accent: 'bg-violet-50 text-violet-600' },
-  { label: 'Wind Speed', value: `${weather.windSpeed} m/s`, icon: Wind, accent: 'bg-emerald-50 text-emerald-600' },
+  { label: 'Feels Like', value: `${weather.feelsLike}°C`, icon: Thermometer, accent: 'bg-violet-400/10 text-violet-300 ring-1 ring-violet-400/15' },
+  { label: 'Humidity', value: `${weather.humidity}%`, icon: Droplets, accent: 'bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/15' },
+  { label: 'Cloud Cover', value: `${weather.cloudCover}%`, icon: Cloud, accent: 'bg-fuchsia-400/10 text-fuchsia-300 ring-1 ring-fuchsia-400/15' },
+  { label: 'Wind Speed', value: `${weather.windSpeed} m/s`, icon: Wind, accent: 'bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/15' },
 ];
 
 export default function Weather() {
@@ -58,14 +58,14 @@ export default function Weather() {
   return (
     <div className="mx-auto max-w-5xl space-y-5">
       <Reveal>
-        <div className="relative overflow-hidden rounded-3xl border border-navy-800 bg-gradient-to-br from-navy-950 via-navy-900 to-[#172554] p-7 text-white shadow-[0_20px_55px_rgba(15,23,42,0.16)] sm:p-8">
+        <div className="relative overflow-hidden rounded-3xl border border-cyan-300/[0.09] bg-[linear-gradient(135deg,#0c1520_0%,#101426_55%,#14101f_100%)] p-7 text-white shadow-[0_20px_55px_rgba(15,23,42,0.16)] sm:p-8">
           <div className="aw-grid-pattern pointer-events-none absolute inset-0 opacity-30" />
-          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-cyan-400/[0.13] blur-3xl" />
           <CloudSun size={185} strokeWidth={0.7} className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 text-white/[0.045] sm:block" />
 
           <div className="relative flex flex-wrap items-start justify-between gap-5">
             <div>
-              <div className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-300">Live weather station</p></div>
+              <div className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-300/80">Live weather station</p></div>
               <p className="mt-3 text-sm font-semibold text-slate-300">{weather.location}</p>
               <div className="mt-1 flex items-end gap-4">
                 <p className="font-display text-6xl font-semibold tracking-[-0.055em]">{weather.temperature}°</p>
@@ -102,7 +102,7 @@ export default function Weather() {
           </div>
           <p className="mt-4 text-sm leading-6 text-slate-600">{weather.suitability?.reason}</p>
           <div className="mt-5 flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-xs leading-5 text-slate-500">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white text-slate-500 shadow-sm"><Info size={14} /></div>
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white/[0.035] text-slate-400 ring-1 ring-white/[0.05]"><Info size={14} /></div>
             <p>This is a basic suitability indicator based on simple cloud cover, wind and condition thresholds. It supports planning but is not a scientific astronomical forecast.</p>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function Weather() {
 
       {weather.isDemoData && (
         <Reveal delay={160}>
-          <div className="flex items-start gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/80 p-4 text-sm text-amber-800">
+          <div className="flex items-start gap-3 rounded-2xl border border-amber-400/15 bg-amber-400/[0.055] p-4 text-sm text-amber-200">
             <AlertTriangle size={17} className="mt-0.5 flex-shrink-0" />
             <p><span className="font-semibold">Demo weather fallback:</span> {weather.note || 'Configure OPENWEATHER_API_KEY in server/.env for live weather data.'}</p>
           </div>

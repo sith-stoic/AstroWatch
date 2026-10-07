@@ -71,7 +71,7 @@ export default function Equipment() {
     <div className="space-y-5">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Asset registry</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-300/80">Asset registry</p>
           <h2 className="mt-1 font-display text-xl font-semibold tracking-[-0.02em] text-slate-900">Observatory equipment</h2>
           <p className="mt-1 max-w-2xl text-sm text-slate-500">Track availability, physical condition, and location for every registered observatory asset.</p>
         </div>
@@ -98,7 +98,7 @@ export default function Equipment() {
           </select>
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-400">
-          <span className="h-2 w-2 rounded-full bg-primary-400" />
+          <span className="h-2 w-2 rounded-full bg-indigo-400" />
           {loading ? 'Refreshing inventory...' : `${items.length} record${items.length === 1 ? '' : 's'} shown`}
         </div>
       </div>
@@ -131,7 +131,7 @@ export default function Equipment() {
                   <tr key={item._id} className="aw-table-row">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+                        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300 ring-1 ring-indigo-400/15">
                           <Telescope size={16} />
                         </div>
                         <span className="font-semibold text-slate-800">{item.name}</span>
@@ -144,7 +144,7 @@ export default function Equipment() {
                     {isAdmin && (
                       <td className="px-5 py-4">
                         <div className="flex items-center justify-end gap-1">
-                          <Link to={`/equipment/edit/${item._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-primary-50 hover:text-primary-600" title="Edit"><Pencil size={15} /></Link>
+                          <Link to={`/equipment/edit/${item._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-indigo-400/[0.08] hover:text-indigo-300" title="Edit"><Pencil size={15} /></Link>
                           <button type="button" onClick={() => setDeleteTarget(item)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>
                         </div>
                       </td>
