@@ -9,18 +9,18 @@ import BrandMark from '../components/common/BrandMark';
 const DEMO_ROLES = [
   {
     id: 'admin', label: 'Admin', icon: ShieldCheck, email: 'admin@astrowatch.com', password: 'admin123',
-    classes: 'border-violet-200/70 bg-violet-50/70 text-violet-800 hover:border-violet-300 hover:bg-violet-100/75',
-    iconClasses: 'text-violet-600',
+    classes: 'border-violet-400/20 bg-violet-500/[0.08] text-violet-200 hover:border-violet-400/45 hover:bg-violet-500/[0.14]',
+    iconClasses: 'text-violet-300',
   },
   {
     id: 'technician', label: 'Technician', icon: Wrench, email: 'technician@astrowatch.com', password: 'tech123',
-    classes: 'border-amber-200/80 bg-amber-50/75 text-amber-800 hover:border-amber-300 hover:bg-amber-100/75',
-    iconClasses: 'text-amber-600',
+    classes: 'border-amber-400/20 bg-amber-500/[0.07] text-amber-200 hover:border-amber-400/45 hover:bg-amber-500/[0.13]',
+    iconClasses: 'text-amber-300',
   },
   {
     id: 'observer', label: 'Observer', icon: Target, email: 'observer@astrowatch.com', password: 'observer123',
-    classes: 'border-cyan-200/80 bg-cyan-50/75 text-cyan-900 hover:border-cyan-300 hover:bg-cyan-100/75',
-    iconClasses: 'text-cyan-700',
+    classes: 'border-cyan-400/20 bg-cyan-500/[0.07] text-cyan-200 hover:border-cyan-400/45 hover:bg-cyan-500/[0.13]',
+    iconClasses: 'text-cyan-300',
   },
 ];
 
@@ -68,16 +68,16 @@ export default function Login() {
       <AuthVisual eyebrow="Mission-ready operations" />
 
       <main className="aw-auth-panel relative flex min-h-screen flex-1 items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-12">
-        <div className="pointer-events-none absolute right-[-14%] top-[-12%] h-80 w-80 rounded-full bg-violet-300/25 blur-[95px]" />
-        <div className="pointer-events-none absolute bottom-[-20%] left-[-8%] h-72 w-72 rounded-full bg-cyan-200/20 blur-[110px]" />
+        <div className="pointer-events-none absolute right-[-14%] top-[-12%] h-80 w-80 rounded-full bg-violet-500/10 blur-[95px]" />
+        <div className="pointer-events-none absolute bottom-[-20%] left-[-8%] h-72 w-72 rounded-full bg-cyan-400/10 blur-[110px]" />
 
         <div className="aw-auth-enter relative z-10 w-full max-w-[470px]">
           <div className="mb-8 lg:hidden">
             <div className="flex items-center gap-3">
               <BrandMark size={48} />
               <div>
-                <p className="font-display text-lg font-semibold tracking-[-0.035em] text-[#1b1822]">AstroWatch</p>
-                <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8b8191]">Observatory Operations</p>
+                <p className="font-display text-lg font-semibold tracking-[-0.035em] text-slate-50">AstroWatch</p>
+                <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">Observatory Operations</p>
               </div>
             </div>
           </div>
@@ -87,8 +87,8 @@ export default function Login() {
               <span className="h-px w-7 bg-violet-500" />
               <p className="aw-auth-kicker">Secure access</p>
             </div>
-            <h2 className="font-display text-[2rem] font-semibold tracking-[-0.045em] text-[#1a1720]">Welcome back</h2>
-            <p className="mt-2.5 text-sm leading-6 text-[#746c78]">Sign in to continue to your observatory operations workspace.</p>
+            <h2 className="font-display text-[2rem] font-semibold tracking-[-0.045em] text-slate-50">Welcome back</h2>
+            <p className="mt-2.5 text-sm leading-6 text-slate-400">Sign in to continue to your observatory operations workspace.</p>
           </div>
 
           <div className="aw-card p-6 sm:p-7">
@@ -122,7 +122,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#99909f] transition-colors hover:bg-[#eee7dd] hover:text-[#4f4658]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-500 transition-colors hover:bg-white/[0.06] hover:text-slate-200"
                     tabIndex={-1}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
@@ -140,9 +140,9 @@ export default function Login() {
             </form>
 
             <div className="my-6 flex items-center gap-3">
-              <span className="h-px flex-1 bg-[#e2d9cc]" />
-              <span className="text-[9px] font-bold uppercase tracking-[0.19em] text-[#9b919e]">Demo access</span>
-              <span className="h-px flex-1 bg-[#e2d9cc]" />
+              <span className="h-px flex-1 bg-white/[0.09]" />
+              <span className="text-[9px] font-bold uppercase tracking-[0.19em] text-slate-500">Demo access</span>
+              <span className="h-px flex-1 bg-white/[0.09]" />
             </div>
 
             <div className="grid grid-cols-3 gap-2">
@@ -160,9 +160,9 @@ export default function Login() {
             </div>
           </div>
 
-          <p className="mt-6 text-center text-sm text-[#766e7b]">
+          <p className="mt-6 text-center text-sm text-slate-500">
             Need an operational account?{' '}
-            <Link to="/register" className="font-bold text-violet-700 transition-colors hover:text-violet-900">Create one</Link>
+            <Link to="/register" className="font-bold text-violet-300 transition-colors hover:text-violet-200">Create one</Link>
           </p>
         </div>
       </main>
