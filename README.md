@@ -16,11 +16,11 @@ The standout feature is **cross-module validation**: before any observation is s
 
 ## Features
 
-- **Authentication** — JWT-based register/login, bcrypt password hashing, protected routes (frontend + backend), persistent login via `localStorage`, simple Admin/Staff roles.
+- **Authentication & Roles** — JWT-based login/register, bcrypt password hashing, persistent sessions, and role-based access for **Admin**, **Technician**, and **Observer**. Public registration is limited to Technician/Observer; Admin cannot be self-created.
 - **Dashboard** — live stats (equipment counts, maintenance counts, observation counts), current weather + observation suitability, equipment status breakdown, upcoming observations/maintenance, recent activity — all computed from real database data.
-- **Equipment Management** — full CRUD, search, filter by status/type, color-coded status & condition badges.
-- **Maintenance Management** — full CRUD, tasks reference Equipment via `ObjectId` + `populate`, filter by status/priority, equipment status auto-syncs with task lifecycle (In Progress → Maintenance, Completed → Operational).
-- **Observation Planning** — full CRUD, the core scheduling workflow:
+- **Equipment Management** — Admin has full CRUD; Technician and Observer accounts have read-only access. Includes search, filters, and color-coded status/condition badges.
+- **Maintenance Management** — Admin creates/edits/deletes tasks and assigns them to registered **Technician** accounts using `ObjectId` references. Technicians see only their own assigned tasks and can update only status/notes. Equipment status auto-syncs with the task lifecycle (In Progress → Maintenance, Completed → Operational).
+- **Observation Planning** — Admin schedules observations and assigns them to registered **Observer** accounts. Observers see only their assigned observations and can update status/notes. The scheduling workflow still performs the core conflict checks:
   1. Does the equipment exist?
   2. Is it Operational (not Offline/under Maintenance)? Warning-status equipment is allowed but flagged.
   3. Does it have a conflicting Scheduled/In-Progress maintenance task that day?
@@ -51,7 +51,7 @@ AstroWatch/
 │   │   │   └── layout/          # Sidebar, Header, DashboardLayout
 │   │   ├── context/             # AuthContext (persistent login)
 │   │   ├── pages/                # Login, Register, Dashboard, Equipment(+Form), Maintenance(+Form), Observations(+Form), Weather, NotFound
-│   │   ├── services/             # api.js + one service file per resource
+│   │   ├── services/             # api.js + service files, including user role directory
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   ├── index.html
@@ -60,7 +60,7 @@ AstroWatch/
 │
 ├── server/                      # Express backend
 │   ├── config/db.js             # MongoDB connection
-│   ├── controllers/             # auth, equipment, maintenance, observation, weather, dashboard
+│   ├── controllers/             # auth, users, equipment, maintenance, observation, weather, dashboard
 │   ├── middleware/               # authMiddleware (protect/authorize), errorMiddleware
 │   ├── models/                   # User, Equipment, Maintenance, Observation
 │   ├── routes/                   # one router per resource
@@ -153,7 +153,7 @@ If the key is missing, invalid, or the request fails for any reason, AstroWatch 
 
 Running `npm run seed` (from `/server`) wipes and repopulates the database with:
 
-- **2 users**: 1 Admin, 1 Staff
+- **8 users**: 1 Admin, 4 Technicians, 3 Observers
 - **8 equipment items** across all 6 types, with a realistic mix of statuses (6 Operational, 1 Warning, 1 Maintenance)
 - **5 maintenance tasks** (mix of Scheduled, In Progress, Completed)
 - **6 observations** targeting Jupiter, Saturn, Mars, Moon, Andromeda Galaxy, and the Orion Nebula, spread across past and upcoming dates with no scheduling conflicts
@@ -165,9 +165,10 @@ To wipe the database without reseeding: `npm run seed:destroy`.
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@astrowatch.com` | `admin123` |
-| Staff | `staff@astrowatch.com` | `staff123` |
+| Technician | `technician@astrowatch.com` | `tech123` |
+| Observer | `observer@astrowatch.com` | `observer123` |
 
-(Both are also one-click fillable from the "Demo credentials" box on the Login page.)
+(All three are one-click fillable from the "Demo credentials" box on the Login page.)
 
 ## URLs
 
@@ -177,16 +178,18 @@ To wipe the database without reseeding: `npm run seed:destroy`.
 
 ## Project Demo Flow (for review)
 
-1. **Login** with the demo Admin account.
-2. **Dashboard** — point out the live stat cards, weather widget with suitability rating, and equipment status breakdown (all computed from MongoDB, not hardcoded).
-3. **Equipment** — show the seeded list, filter by status (e.g. "Maintenance" to show `Tracking System-01`), open **Add Equipment** to show validation.
-4. **Maintenance** — show `Tracking System-01`'s "In Progress" task; point out it's linked via `ObjectId` + `populate`, not a duplicated equipment name.
-5. **Observations — the key demo**:
+1. **Login as Admin** and show that Admin can manage equipment, maintenance, and observation scheduling.
+2. **Dashboard** — point out live MongoDB-backed counts, weather, and operational summaries.
+3. **Maintenance assignment** — create/edit a maintenance task and assign a registered Technician from the dropdown.
+4. **Login as Technician** — only that Technician's assigned maintenance tasks are visible; update one from Scheduled/In Progress to Completed, then return to the dashboard to show the counts changed.
+5. **Observation assignment** — return as Admin, schedule an observation and assign a registered Observer. The conflict-validation demo remains the key technical feature:
    - Schedule a new observation on `Telescope-01` for a time that overlaps an existing seeded observation → AstroWatch rejects it with a specific conflict message.
    - Try scheduling on `Tracking System-01` (status: Maintenance) → rejected immediately with an equipment-status message.
    - Schedule a valid, non-conflicting observation → **"Observation Scheduled Successfully."**
    - Optionally schedule on `CCD Camera-02` (status: Warning) → succeeds, but shows a warning banner.
-6. **Weather** — show current conditions and the Suitable/Moderate/Unfavorable indicator; mention the demo-data fallback if no API key is configured.
+6. **Login as Observer** — only that Observer's assigned observations are visible; update status/notes and show the Observer dashboard change.
+7. **Login as Admin again** — show that the same Technician/Observer updates are reflected in the Admin dashboard because every role uses the same MongoDB data.
+8. **Weather** — show current conditions and the Suitable/Moderate/Unfavorable indicator; mention the demo-data fallback if no API key is configured.
 
 ## Troubleshooting
 
@@ -202,7 +205,7 @@ To wipe the database without reseeding: `npm run seed:destroy`.
 
 ## Current Scope
 
-User authentication · Equipment management · Maintenance management · Observation planning with full cross-module conflict detection · Weather monitoring with suitability rating · Centralized dashboard.
+Role-based authentication · Admin equipment management · Technician maintenance workflow · Observer observation workflow · MongoDB user assignments · Observation planning with cross-module conflict detection · Weather monitoring · Role-aware dashboards.
 
 ## Future Scope
 

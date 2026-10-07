@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Pencil, Trash2, Target, Clock } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Target, Clock, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import observationService from '../services/observationService';
 import StatusBadge from '../components/common/StatusBadge';
 import Loader from '../components/common/Loader';
 import EmptyState from '../components/common/EmptyState';
 import ConfirmModal from '../components/common/ConfirmModal';
+import { useAuth } from '../context/AuthContext';
 
 const STATUS_OPTIONS = ['Scheduled', 'In Progress', 'Completed', 'Cancelled'];
 const PRIORITY_OPTIONS = ['Low', 'Medium', 'High'];
-
 const formatDate = (date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 export default function Observations() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'Admin';
+  const isObserver = user?.role === 'Observer';
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -29,8 +33,7 @@ export default function Observations() {
       if (search) params.search = search;
       if (statusFilter) params.status = statusFilter;
       if (priorityFilter) params.priority = priorityFilter;
-      const data = await observationService.getAll(params);
-      setItems(data);
+      setItems(await observationService.getAll(params));
     } catch (error) {
       toast.error(error.message || 'Could not load observations');
     } finally {
@@ -45,7 +48,7 @@ export default function Observations() {
   }, [search, statusFilter, priorityFilter]);
 
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || !isAdmin) return;
     setDeleting(true);
     try {
       await observationService.remove(deleteTarget._id);
@@ -61,17 +64,17 @@ export default function Observations() {
 
   return (
     <div className="space-y-5">
+      {isObserver && (
+        <div className="rounded-lg border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-800">
+          <strong>My assigned observations:</strong> only observations assigned to your Observer account are shown. You can update observation status and notes; scheduling and assignment are controlled by Admin.
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-1 flex-wrap items-center gap-3">
           <div className="relative w-full max-w-xs">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by target or observer..."
-              className="aw-input pl-9"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <input type="text" placeholder={isAdmin ? 'Search by target or observer...' : 'Search my observations...'} className="aw-input pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="aw-input w-auto" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option value="">All statuses</option>
@@ -82,9 +85,9 @@ export default function Observations() {
             {PRIORITY_OPTIONS.map((p) => <option key={p} value={p}>{p}</option>)}
           </select>
         </div>
-        <Link to="/observations/add" className="aw-btn-primary">
-          <Plus size={16} /> Schedule Observation
-        </Link>
+        {isAdmin && (
+          <Link to="/observations/add" className="aw-btn-primary"><Plus size={16} /> Schedule Observation</Link>
+        )}
       </div>
 
       <div className="aw-card overflow-hidden">
@@ -93,9 +96,9 @@ export default function Observations() {
         ) : items.length === 0 ? (
           <EmptyState
             icon={Target}
-            title="No observations found"
-            message="Try adjusting your filters, or schedule a new observation."
-            action={<Link to="/observations/add" className="aw-btn-primary"><Plus size={16} /> Schedule Observation</Link>}
+            title={isObserver ? 'No assigned observations' : 'No observations found'}
+            message={isObserver ? 'There are currently no observations assigned to your account.' : 'Try adjusting your filters, or schedule a new observation.'}
+            action={isAdmin ? <Link to="/observations/add" className="aw-btn-primary"><Plus size={16} /> Schedule Observation</Link> : null}
           />
         ) : (
           <div className="overflow-x-auto">
@@ -117,22 +120,19 @@ export default function Observations() {
                     <td className="px-5 py-3.5 font-medium text-slate-800">{obs.target}</td>
                     <td className="px-5 py-3.5 text-slate-600">{obs.equipment?.name || '—'}</td>
                     <td className="px-5 py-3.5 text-slate-600">
-                      <span className="flex items-center gap-1.5">
-                        <Clock size={13} className="text-slate-400" />
-                        {formatDate(obs.date)} · {obs.startTime}–{obs.endTime}
-                      </span>
+                      <span className="flex items-center gap-1.5"><Clock size={13} className="text-slate-400" />{formatDate(obs.date)} · {obs.startTime}–{obs.endTime}</span>
                     </td>
-                    <td className="px-5 py-3.5 text-slate-600">{obs.observer}</td>
+                    <td className="px-5 py-3.5 text-slate-600">{obs.observer?.name || '—'}</td>
                     <td className="px-5 py-3.5"><StatusBadge value={obs.priority} /></td>
                     <td className="px-5 py-3.5"><StatusBadge value={obs.status} /></td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-end gap-2">
-                        <Link to={`/observations/edit/${obs._id}`} className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary-600" title="Edit">
-                          <Pencil size={15} />
+                        <Link to={`/observations/edit/${obs._id}`} className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary-600" title={isAdmin ? 'Edit observation' : 'Update status'}>
+                          {isAdmin ? <Pencil size={15} /> : <RefreshCw size={15} />}
                         </Link>
-                        <button type="button" onClick={() => setDeleteTarget(obs)} className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600" title="Delete">
-                          <Trash2 size={15} />
-                        </button>
+                        {isAdmin && (
+                          <button type="button" onClick={() => setDeleteTarget(obs)} className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -143,14 +143,9 @@ export default function Observations() {
         )}
       </div>
 
-      <ConfirmModal
-        open={!!deleteTarget}
-        title="Delete observation?"
-        message={`This will permanently remove the "${deleteTarget?.target}" observation. This action cannot be undone.`}
-        onCancel={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
-        loading={deleting}
-      />
+      {isAdmin && (
+        <ConfirmModal open={!!deleteTarget} title="Delete observation?" message={`This will permanently remove the "${deleteTarget?.target}" observation. This action cannot be undone.`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />
+      )}
     </div>
   );
 }

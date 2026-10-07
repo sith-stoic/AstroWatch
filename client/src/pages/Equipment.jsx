@@ -7,6 +7,7 @@ import StatusBadge from '../components/common/StatusBadge';
 import Loader from '../components/common/Loader';
 import EmptyState from '../components/common/EmptyState';
 import ConfirmModal from '../components/common/ConfirmModal';
+import { useAuth } from '../context/AuthContext';
 
 const STATUS_OPTIONS = ['Operational', 'Warning', 'Offline', 'Maintenance'];
 const TYPE_OPTIONS = [
@@ -19,6 +20,8 @@ const TYPE_OPTIONS = [
 ];
 
 export default function Equipment() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'Admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -50,7 +53,7 @@ export default function Equipment() {
   }, [search, statusFilter, typeFilter]);
 
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || !isAdmin) return;
     setDeleting(true);
     try {
       await equipmentService.remove(deleteTarget._id);
@@ -91,9 +94,11 @@ export default function Equipment() {
             ))}
           </select>
         </div>
-        <Link to="/equipment/add" className="aw-btn-primary">
-          <Plus size={16} /> Add Equipment
-        </Link>
+        {isAdmin && (
+          <Link to="/equipment/add" className="aw-btn-primary">
+            <Plus size={16} /> Add Equipment
+          </Link>
+        )}
       </div>
 
       <div className="aw-card overflow-hidden">
@@ -104,11 +109,11 @@ export default function Equipment() {
             icon={Telescope}
             title="No equipment found"
             message="Try adjusting your filters, or add a new item."
-            action={
+            action={isAdmin ? (
               <Link to="/equipment/add" className="aw-btn-primary">
                 <Plus size={16} /> Add Equipment
               </Link>
-            }
+            ) : null}
           />
         ) : (
           <div className="overflow-x-auto">
@@ -120,7 +125,7 @@ export default function Equipment() {
                   <th className="px-5 py-3 font-medium">Location</th>
                   <th className="px-5 py-3 font-medium">Status</th>
                   <th className="px-5 py-3 font-medium">Condition</th>
-                  <th className="px-5 py-3 font-medium text-right">Actions</th>
+                  {isAdmin && <th className="px-5 py-3 font-medium text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -135,25 +140,27 @@ export default function Equipment() {
                     </td>
                     <td className="px-5 py-3.5"><StatusBadge value={item.status} /></td>
                     <td className="px-5 py-3.5"><StatusBadge value={item.condition} /></td>
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          to={`/equipment/edit/${item._id}`}
-                          className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary-600"
-                          title="Edit"
-                        >
-                          <Pencil size={15} />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => setDeleteTarget(item)}
-                          className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600"
-                          title="Delete"
-                        >
-                          <Trash2 size={15} />
-                        </button>
-                      </div>
-                    </td>
+                    {isAdmin && (
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            to={`/equipment/edit/${item._id}`}
+                            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary-600"
+                            title="Edit"
+                          >
+                            <Pencil size={15} />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteTarget(item)}
+                            className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600"
+                            title="Delete"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -162,14 +169,16 @@ export default function Equipment() {
         )}
       </div>
 
-      <ConfirmModal
-        open={!!deleteTarget}
-        title="Delete equipment?"
-        message={`This will permanently remove "${deleteTarget?.name}". This action cannot be undone.`}
-        onCancel={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
-        loading={deleting}
-      />
+      {isAdmin && (
+        <ConfirmModal
+          open={!!deleteTarget}
+          title="Delete equipment?"
+          message={`This will permanently remove "${deleteTarget?.name}". This action cannot be undone.`}
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={handleDelete}
+          loading={deleting}
+        />
+      )}
     </div>
   );
 }

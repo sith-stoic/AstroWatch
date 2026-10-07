@@ -10,6 +10,7 @@ const maintenanceRoutes = require('./routes/maintenanceRoutes');
 const observationRoutes = require('./routes/observationRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 connectDB();
 
@@ -46,6 +47,7 @@ app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/observations', observationRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/users', userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

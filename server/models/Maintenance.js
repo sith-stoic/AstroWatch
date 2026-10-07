@@ -22,9 +22,9 @@ const maintenanceSchema = new mongoose.Schema(
       required: [true, 'Scheduled date is required'],
     },
     assignedTo: {
-      type: String,
-      required: [true, 'Assigned technician/staff name is required'],
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Assigned technician is required'],
     },
     priority: {
       type: String,

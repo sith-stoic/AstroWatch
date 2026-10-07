@@ -8,23 +8,22 @@ import {
   LogOut,
   ChevronsLeft,
   ChevronsRight,
-  Star,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/equipment', label: 'Equipment', icon: Telescope },
-  { to: '/maintenance', label: 'Maintenance', icon: Wrench },
-  { to: '/observations', label: 'Observations', icon: Target },
-  { to: '/weather', label: 'Weather', icon: CloudSun },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Admin', 'Technician', 'Observer'] },
+  { to: '/equipment', label: 'Equipment', icon: Telescope, roles: ['Admin', 'Technician', 'Observer'] },
+  { to: '/maintenance', label: 'Maintenance', icon: Wrench, roles: ['Admin', 'Technician'] },
+  { to: '/observations', label: 'Observations', icon: Target, roles: ['Admin', 'Observer'] },
+  { to: '/weather', label: 'Weather', icon: CloudSun, roles: ['Admin', 'Technician', 'Observer'] },
 ];
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -33,16 +32,17 @@ export default function Sidebar() {
     navigate('/login');
   };
 
+  const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(user?.role));
+
   return (
     <aside
       className={`flex h-screen flex-col bg-navy-900 text-slate-200 transition-all duration-200 ${
         collapsed ? 'w-[76px]' : 'w-64'
       }`}
     >
-      {/* Brand */}
       <div className="flex items-center gap-2.5 px-5 py-5">
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-primary-600">
-          <Star size={18} className="text-white" fill="currentColor" strokeWidth={1} />
+          <Telescope size={20} className="text-white" strokeWidth={1.8} />
         </div>
         {!collapsed && (
           <div className="min-w-0">
@@ -52,9 +52,8 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* Nav */}
       <nav className="mt-2 flex-1 space-y-1 px-3">
-        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+        {visibleItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -73,7 +72,6 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer: collapse toggle + logout */}
       <div className="space-y-1 border-t border-navy-800 px-3 py-4">
         <button
           type="button"

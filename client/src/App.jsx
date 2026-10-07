@@ -14,14 +14,16 @@ import ObservationForm from './pages/ObservationForm';
 import Weather from './pages/Weather';
 import NotFound from './pages/NotFound';
 
+const rolePage = (roles, page) => (
+  <ProtectedRoute allowedRoles={roles}>{page}</ProtectedRoute>
+);
+
 export default function App() {
   return (
     <Routes>
-      {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Protected routes - share the sidebar/header shell */}
       <Route
         element={
           <ProtectedRoute>
@@ -32,21 +34,20 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="/equipment" element={<Equipment />} />
-        <Route path="/equipment/add" element={<EquipmentForm />} />
-        <Route path="/equipment/edit/:id" element={<EquipmentForm />} />
+        <Route path="/equipment/add" element={rolePage(['Admin'], <EquipmentForm />)} />
+        <Route path="/equipment/edit/:id" element={rolePage(['Admin'], <EquipmentForm />)} />
 
-        <Route path="/maintenance" element={<Maintenance />} />
-        <Route path="/maintenance/add" element={<MaintenanceForm />} />
-        <Route path="/maintenance/edit/:id" element={<MaintenanceForm />} />
+        <Route path="/maintenance" element={rolePage(['Admin', 'Technician'], <Maintenance />)} />
+        <Route path="/maintenance/add" element={rolePage(['Admin'], <MaintenanceForm />)} />
+        <Route path="/maintenance/edit/:id" element={rolePage(['Admin', 'Technician'], <MaintenanceForm />)} />
 
-        <Route path="/observations" element={<Observations />} />
-        <Route path="/observations/add" element={<ObservationForm />} />
-        <Route path="/observations/edit/:id" element={<ObservationForm />} />
+        <Route path="/observations" element={rolePage(['Admin', 'Observer'], <Observations />)} />
+        <Route path="/observations/add" element={rolePage(['Admin'], <ObservationForm />)} />
+        <Route path="/observations/edit/:id" element={rolePage(['Admin', 'Observer'], <ObservationForm />)} />
 
         <Route path="/weather" element={<Weather />} />
       </Route>
 
-      {/* Redirects & fallback */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

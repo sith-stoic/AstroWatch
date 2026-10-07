@@ -1,10 +1,14 @@
 const Observation = require('../models/Observation');
 const Equipment = require('../models/Equipment');
 const Maintenance = require('../models/Maintenance');
+const User = require('../models/User');
 const { asyncHandler } = require('../middleware/errorMiddleware');
 
-// Combines a date (Date object / ISO string) with a "HH:MM" time string into
-// a single Date instance so two observations can be compared reliably.
+const populateObservation = (query) =>
+  query
+    .populate('equipment', 'name type location status')
+    .populate('observer', 'name email role');
+
 const combineDateAndTime = (date, timeStr) => {
   const combined = new Date(date);
   const [hours, minutes] = timeStr.split(':').map(Number);
@@ -12,11 +16,18 @@ const combineDateAndTime = (date, timeStr) => {
   return combined;
 };
 
-// Returns true if two [start, end) ranges overlap.
 const rangesOverlap = (startA, endA, startB, endB) => startA < endB && endA > startB;
 
-// Runs every cross-module validation check described in the project brief.
-// Returns { error, warning } - error blocks creation, warning is informational only.
+const ensureObserver = async (userId) => {
+  const observer = await User.findById(userId).select('name email role');
+  if (!observer || observer.role !== 'Observer') {
+    const error = new Error('Assigned user must be a registered Observer');
+    error.statusCode = 400;
+    throw error;
+  }
+  return observer;
+};
+
 const validateObservationRequest = async ({
   equipmentId,
   date,
@@ -24,13 +35,9 @@ const validateObservationRequest = async ({
   endTime,
   excludeObservationId,
 }) => {
-  // 1. Equipment must exist
   const equipment = await Equipment.findById(equipmentId);
-  if (!equipment) {
-    return { error: 'Selected equipment does not exist.' };
-  }
+  if (!equipment) return { error: 'Selected equipment does not exist.' };
 
-  // 2. Equipment status must allow scheduling
   if (equipment.status === 'Offline') {
     return { error: `${equipment.name} is Offline and cannot be scheduled for observation.` };
   }
@@ -45,12 +52,8 @@ const validateObservationRequest = async ({
 
   const newStart = combineDateAndTime(date, startTime);
   const newEnd = combineDateAndTime(date, endTime);
+  if (newEnd <= newStart) return { error: 'End time must be after start time.' };
 
-  if (newEnd <= newStart) {
-    return { error: 'End time must be after start time.' };
-  }
-
-  // 3. Maintenance conflict - same equipment, same calendar day, active task
   const dayStart = new Date(date);
   dayStart.setHours(0, 0, 0, 0);
   const dayEnd = new Date(date);
@@ -68,7 +71,6 @@ const validateObservationRequest = async ({
     };
   }
 
-  // 4. Observation time conflict - same equipment, same day, overlapping time range
   const sameDayObservations = await Observation.find({
     equipment: equipmentId,
     status: { $ne: 'Cancelled' },
@@ -79,7 +81,6 @@ const validateObservationRequest = async ({
   for (const existing of sameDayObservations) {
     const existingStart = combineDateAndTime(existing.date, existing.startTime);
     const existingEnd = combineDateAndTime(existing.date, existing.endTime);
-
     if (rangesOverlap(newStart, newEnd, existingStart, existingEnd)) {
       return {
         error: `${equipment.name} is already scheduled for "${existing.target}" from ${existing.startTime} to ${existing.endTime} on this date.`,
@@ -90,54 +91,64 @@ const validateObservationRequest = async ({
   return { error: null, warning };
 };
 
-// @desc    Get all observations (supports ?status=&priority=&equipment=&search=)
-// @route   GET /api/observations
-// @access  Private
+// Admin sees every observation. An Observer sees only observations assigned to them.
 const getObservations = asyncHandler(async (req, res) => {
   const { status, priority, equipment, search } = req.query;
   const query = {};
 
+  if (req.user.role === 'Observer') query.observer = req.user._id;
   if (status) query.status = status;
   if (priority) query.priority = priority;
   if (equipment) query.equipment = equipment;
+
   if (search) {
-    query.$or = [
+    const matchingObservers = await User.find({
+      role: 'Observer',
+      name: { $regex: search, $options: 'i' },
+    }).select('_id');
+
+    const searchClauses = [
       { target: { $regex: search, $options: 'i' } },
-      { observer: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
     ];
+    if (matchingObservers.length) {
+      searchClauses.push({ observer: { $in: matchingObservers.map((u) => u._id) } });
+    }
+    query.$or = searchClauses;
   }
 
-  const observations = await Observation.find(query)
-    .populate('equipment', 'name type location status')
-    .sort({ date: 1, startTime: 1 });
-
+  const observations = await populateObservation(Observation.find(query)).sort({ date: 1, startTime: 1 });
   res.json(observations);
 });
 
-// @desc    Get single observation
-// @route   GET /api/observations/:id
-// @access  Private
 const getObservationById = asyncHandler(async (req, res) => {
-  const observation = await Observation.findById(req.params.id).populate(
-    'equipment',
-    'name type location status'
-  );
+  const observation = await populateObservation(Observation.findById(req.params.id));
   if (!observation) {
     res.status(404);
     throw new Error('Observation not found');
   }
+
+  if (req.user.role === 'Observer' && observation.observer?._id.toString() !== req.user._id.toString()) {
+    res.status(403);
+    throw new Error('You can only access observations assigned to you');
+  }
+
   res.json(observation);
 });
 
-// @desc    Create new observation (runs full validation pipeline)
-// @route   POST /api/observations
-// @access  Private
 const createObservation = asyncHandler(async (req, res) => {
   const { target, description, date, startTime, endTime, equipment, observer, priority, notes } = req.body;
 
   if (!target || !date || !startTime || !endTime || !equipment || !observer) {
     res.status(400);
-    throw new Error('Target, date, startTime, endTime, equipment and observer are required');
+    throw new Error('Target, date, startTime, endTime, equipment and assigned observer are required');
+  }
+
+  try {
+    await ensureObserver(observer);
+  } catch (error) {
+    res.status(error.statusCode || 400);
+    throw error;
   }
 
   const { error, warning } = await validateObservationRequest({
@@ -148,7 +159,7 @@ const createObservation = asyncHandler(async (req, res) => {
   });
 
   if (error) {
-    res.status(409); // Conflict
+    res.status(409);
     throw new Error(error);
   }
 
@@ -164,8 +175,7 @@ const createObservation = asyncHandler(async (req, res) => {
     notes,
   });
 
-  const populated = await observation.populate('equipment', 'name type location status');
-
+  const populated = await populateObservation(Observation.findById(observation._id));
   res.status(201).json({
     observation: populated,
     warning: warning || null,
@@ -173,14 +183,32 @@ const createObservation = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Update observation (re-runs validation, excluding itself)
-// @route   PUT /api/observations/:id
-// @access  Private
 const updateObservation = asyncHandler(async (req, res) => {
   const observation = await Observation.findById(req.params.id);
   if (!observation) {
     res.status(404);
     throw new Error('Observation not found');
+  }
+
+  if (req.user.role === 'Observer') {
+    if (observation.observer.toString() !== req.user._id.toString()) {
+      res.status(403);
+      throw new Error('You can only update observations assigned to you');
+    }
+
+    const allowedStatuses = ['Scheduled', 'In Progress', 'Completed', 'Cancelled'];
+    if (req.body.status !== undefined) {
+      if (!allowedStatuses.includes(req.body.status)) {
+        res.status(400);
+        throw new Error('Observers can update only their observation status and notes');
+      }
+      observation.status = req.body.status;
+    }
+    if (req.body.notes !== undefined) observation.notes = req.body.notes;
+
+    const updated = await observation.save();
+    const populated = await populateObservation(Observation.findById(updated._id));
+    return res.json({ observation: populated, warning: null, message: 'Observation status updated successfully' });
   }
 
   const merged = {
@@ -190,41 +218,41 @@ const updateObservation = asyncHandler(async (req, res) => {
     startTime: req.body.startTime ?? observation.startTime,
     endTime: req.body.endTime ?? observation.endTime,
     equipment: req.body.equipment ?? observation.equipment.toString(),
-    observer: req.body.observer ?? observation.observer,
+    observer: req.body.observer ?? observation.observer.toString(),
     priority: req.body.priority ?? observation.priority,
     status: req.body.status ?? observation.status,
     notes: req.body.notes ?? observation.notes,
   };
 
-  // Only re-run conflict checks if the change could actually create a new conflict,
-  // and skip them entirely if the observation is being cancelled.
+  try {
+    await ensureObserver(merged.observer);
+  } catch (error) {
+    res.status(error.statusCode || 400);
+    throw error;
+  }
+
   let warning = null;
   if (merged.status !== 'Cancelled') {
-    const { error, warning: w } = await validateObservationRequest({
+    const result = await validateObservationRequest({
       equipmentId: merged.equipment,
       date: merged.date,
       startTime: merged.startTime,
       endTime: merged.endTime,
       excludeObservationId: observation._id,
     });
-
-    if (error) {
+    if (result.error) {
       res.status(409);
-      throw new Error(error);
+      throw new Error(result.error);
     }
-    warning = w;
+    warning = result.warning;
   }
 
   Object.assign(observation, merged);
   const updated = await observation.save();
-  const populated = await updated.populate('equipment', 'name type location status');
-
+  const populated = await populateObservation(Observation.findById(updated._id));
   res.json({ observation: populated, warning: warning || null, message: 'Observation updated successfully' });
 });
 
-// @desc    Delete observation
-// @route   DELETE /api/observations/:id
-// @access  Private
 const deleteObservation = asyncHandler(async (req, res) => {
   const observation = await Observation.findById(req.params.id);
   if (!observation) {

@@ -2,10 +2,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Loader from './Loader';
 
-// Wraps any page that requires a logged-in user. Redirects to /login
-// (preserving nothing fancy - simple and reliable for a college project) if not authenticated.
-export default function ProtectedRoute({ children }) {
-  const { isAuthenticated, loading } = useAuth();
+export default function ProtectedRoute({ children, allowedRoles }) {
+  const { user, isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
@@ -15,8 +13,10 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

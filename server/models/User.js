@@ -24,14 +24,14 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['Admin', 'Staff'],
-      default: 'Staff',
+      enum: ['Admin', 'Technician', 'Observer'],
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-// Hash password before saving, only if it has been modified
+// Hash password before saving, only if it has been modified.
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
@@ -39,7 +39,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Instance method to compare a plaintext password with the hashed one
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };

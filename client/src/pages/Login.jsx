@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Star, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Telescope, Loader2, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -39,7 +39,8 @@ export default function Login() {
 
   const fillDemo = (role) => {
     if (role === 'admin') setForm({ email: 'admin@astrowatch.com', password: 'admin123' });
-    else setForm({ email: 'staff@astrowatch.com', password: 'staff123' });
+    if (role === 'technician') setForm({ email: 'technician@astrowatch.com', password: 'tech123' });
+    if (role === 'observer') setForm({ email: 'observer@astrowatch.com', password: 'observer123' });
   };
 
   return (
@@ -47,7 +48,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600">
-            <Star size={24} className="text-white" fill="currentColor" strokeWidth={1} />
+            <Telescope size={26} className="text-white" strokeWidth={1.8} />
           </div>
           <h1 className="font-display text-2xl font-semibold text-white">AstroWatch</h1>
           <p className="mt-1 text-sm text-slate-400">Space Observatory Monitoring &amp; Management</p>
@@ -60,34 +61,15 @@ export default function Login() {
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <div>
               <label className="aw-label" htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                className="aw-input"
-                placeholder="you@astrowatch.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
+              <input id="email" type="email" className="aw-input" placeholder="you@astrowatch.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               {errors.email && <p className="aw-error-text">{errors.email}</p>}
             </div>
 
             <div>
               <label className="aw-label" htmlFor="password">Password</label>
               <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  className="aw-input pr-10"
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  tabIndex={-1}
-                >
+                <input id="password" type={showPassword ? 'text' : 'password'} className="aw-input pr-10" placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+                <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" tabIndex={-1}>
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
@@ -102,21 +84,16 @@ export default function Login() {
 
           <div className="mt-5 rounded-lg bg-sky-50 p-3.5 text-xs text-slate-600">
             <p className="mb-1.5 font-medium text-slate-700">Demo credentials</p>
-            <div className="flex gap-2">
-              <button type="button" onClick={() => fillDemo('admin')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">
-                Use Admin
-              </button>
-              <button type="button" onClick={() => fillDemo('staff')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">
-                Use Staff
-              </button>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => fillDemo('admin')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">Admin</button>
+              <button type="button" onClick={() => fillDemo('technician')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">Technician</button>
+              <button type="button" onClick={() => fillDemo('observer')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">Observer</button>
             </div>
           </div>
 
           <p className="mt-5 text-center text-sm text-slate-500">
             Don&apos;t have an account?{' '}
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-700">
-              Register
-            </Link>
+            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-700">Register</Link>
           </p>
         </div>
       </div>

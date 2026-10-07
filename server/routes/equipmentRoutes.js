@@ -6,13 +6,18 @@ const {
   updateEquipment,
   deleteEquipment,
 } = require('../controllers/equipmentController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
+router.use(protect);
 
-router.use(protect); // every equipment route requires a logged-in user
+router.route('/')
+  .get(getEquipment)
+  .post(authorize('Admin'), createEquipment);
 
-router.route('/').get(getEquipment).post(createEquipment);
-router.route('/:id').get(getEquipmentById).put(updateEquipment).delete(deleteEquipment);
+router.route('/:id')
+  .get(getEquipmentById)
+  .put(authorize('Admin'), updateEquipment)
+  .delete(authorize('Admin'), deleteEquipment);
 
 module.exports = router;

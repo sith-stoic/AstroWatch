@@ -16,9 +16,6 @@ const observationSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'Observation date is required'],
     },
-    // Stored as 24-hour "HH:MM" strings so they are easy to render in a
-    // <input type="time"> field and easy to compare using Date objects
-    // built from `date` + the time string (see observationController.js)
     startTime: {
       type: String,
       required: [true, 'Start time is required'],
@@ -35,9 +32,9 @@ const observationSchema = new mongoose.Schema(
       required: [true, 'Equipment reference is required'],
     },
     observer: {
-      type: String,
-      required: [true, 'Observer name is required'],
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Assigned observer is required'],
     },
     priority: {
       type: String,

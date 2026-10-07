@@ -6,13 +6,18 @@ const {
   updateObservation,
   deleteObservation,
 } = require('../controllers/observationController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
-
 router.use(protect);
 
-router.route('/').get(getObservations).post(createObservation);
-router.route('/:id').get(getObservationById).put(updateObservation).delete(deleteObservation);
+router.route('/')
+  .get(authorize('Admin', 'Observer'), getObservations)
+  .post(authorize('Admin'), createObservation);
+
+router.route('/:id')
+  .get(authorize('Admin', 'Observer'), getObservationById)
+  .put(authorize('Admin', 'Observer'), updateObservation)
+  .delete(authorize('Admin'), deleteObservation);
 
 module.exports = router;

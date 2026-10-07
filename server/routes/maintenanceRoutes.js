@@ -6,13 +6,18 @@ const {
   updateMaintenance,
   deleteMaintenance,
 } = require('../controllers/maintenanceController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
-
 router.use(protect);
 
-router.route('/').get(getMaintenance).post(createMaintenance);
-router.route('/:id').get(getMaintenanceById).put(updateMaintenance).delete(deleteMaintenance);
+router.route('/')
+  .get(authorize('Admin', 'Technician'), getMaintenance)
+  .post(authorize('Admin'), createMaintenance);
+
+router.route('/:id')
+  .get(authorize('Admin', 'Technician'), getMaintenanceById)
+  .put(authorize('Admin', 'Technician'), updateMaintenance)
+  .delete(authorize('Admin'), deleteMaintenance);
 
 module.exports = router;

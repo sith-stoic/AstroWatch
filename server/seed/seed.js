@@ -1,6 +1,5 @@
-// Populates the database with realistic demo data for the project review.
-// Run with:  npm run seed          (from inside /server)
-// Wipe with: npm run seed:destroy
+// Populates the database with demo data for AstroWatch.
+// Run with: npm run seed (from /server)
 require('dotenv').config();
 const mongoose = require('mongoose');
 const connectDB = require('../config/db');
@@ -10,8 +9,6 @@ const Equipment = require('../models/Equipment');
 const Maintenance = require('../models/Maintenance');
 const Observation = require('../models/Observation');
 
-// Small helper to build a Date relative to "today" so the seed data always
-// looks current (some days in the past, some in the near future) no matter when it's run.
 const daysFromNow = (offset, hours = 0, minutes = 0) => {
   const d = new Date();
   d.setDate(d.getDate() + offset);
@@ -33,7 +30,7 @@ const seedData = async () => {
   await destroyData();
 
   // ---------- USERS ----------
-  await User.create([
+  const userDocs = await User.create([
     {
       name: 'Admin User',
       email: 'admin@astrowatch.com',
@@ -41,13 +38,51 @@ const seedData = async () => {
       role: 'Admin',
     },
     {
-      name: 'Staff Member',
-      email: 'staff@astrowatch.com',
-      password: 'staff123',
-      role: 'Staff',
+      name: 'Arjun Mehta',
+      email: 'technician@astrowatch.com',
+      password: 'tech123',
+      role: 'Technician',
+    },
+    {
+      name: 'Priya Nair',
+      email: 'priya.tech@astrowatch.com',
+      password: 'tech123',
+      role: 'Technician',
+    },
+    {
+      name: 'Ravi Kumar',
+      email: 'ravi.tech@astrowatch.com',
+      password: 'tech123',
+      role: 'Technician',
+    },
+    {
+      name: 'Divya R',
+      email: 'divya.tech@astrowatch.com',
+      password: 'tech123',
+      role: 'Technician',
+    },
+    {
+      name: 'Dr. Ananya Rao',
+      email: 'observer@astrowatch.com',
+      password: 'observer123',
+      role: 'Observer',
+    },
+    {
+      name: 'Dr. Vikram Iyer',
+      email: 'vikram.obs@astrowatch.com',
+      password: 'observer123',
+      role: 'Observer',
+    },
+    {
+      name: 'Dr. Meera Nair',
+      email: 'meera.obs@astrowatch.com',
+      password: 'observer123',
+      role: 'Observer',
     },
   ]);
-  console.log('Users seeded.');
+  console.log(`${userDocs.length} users seeded.`);
+
+  const usersByEmail = Object.fromEntries(userDocs.map((u) => [u.email, u]));
 
   // ---------- EQUIPMENT ----------
   const equipmentDocs = await Equipment.insertMany([
@@ -143,7 +178,7 @@ const seedData = async () => {
       title: 'Motor calibration and alignment check',
       description: 'Recalibrate azimuth/altitude motors after drift was reported during last session.',
       scheduledDate: daysFromNow(0, 10, 0),
-      assignedTo: 'Arjun Mehta',
+      assignedTo: usersByEmail['technician@astrowatch.com']._id,
       priority: 'High',
       status: 'In Progress',
       notes: 'Replacement encoder ordered as a precaution.',
@@ -153,7 +188,7 @@ const seedData = async () => {
       title: 'Sensor cooling unit inspection',
       description: 'Investigate intermittent temperature warnings on the cooling module.',
       scheduledDate: daysFromNow(3, 11, 0),
-      assignedTo: 'Priya Nair',
+      assignedTo: usersByEmail['priya.tech@astrowatch.com']._id,
       priority: 'Medium',
       status: 'Scheduled',
       notes: '',
@@ -163,7 +198,7 @@ const seedData = async () => {
       title: 'Routine mirror cleaning',
       description: 'Standard quarterly cleaning and dust check of the primary mirror.',
       scheduledDate: daysFromNow(-12, 9, 0),
-      assignedTo: 'Ravi Kumar',
+      assignedTo: usersByEmail['ravi.tech@astrowatch.com']._id,
       priority: 'Low',
       status: 'Completed',
       notes: 'No issues found. Optical alignment verified.',
@@ -173,7 +208,7 @@ const seedData = async () => {
       title: 'Receiver dish realignment',
       description: 'Re-align dish after minor signal degradation was observed.',
       scheduledDate: daysFromNow(-8, 14, 0),
-      assignedTo: 'Karthik S',
+      assignedTo: usersByEmail['technician@astrowatch.com']._id,
       priority: 'Medium',
       status: 'Completed',
       notes: 'Signal strength restored to baseline.',
@@ -183,7 +218,7 @@ const seedData = async () => {
       title: 'Firmware update',
       description: 'Apply latest firmware update to improve humidity sensor accuracy.',
       scheduledDate: daysFromNow(6, 15, 0),
-      assignedTo: 'Divya R',
+      assignedTo: usersByEmail['divya.tech@astrowatch.com']._id,
       priority: 'Low',
       status: 'Scheduled',
       notes: '',
@@ -200,7 +235,7 @@ const seedData = async () => {
       startTime: '20:00',
       endTime: '21:00',
       equipment: byName['Telescope-01']._id,
-      observer: 'Dr. Ananya Rao',
+      observer: usersByEmail['observer@astrowatch.com']._id,
       priority: 'High',
       status: 'Scheduled',
       notes: '',
@@ -212,7 +247,7 @@ const seedData = async () => {
       startTime: '21:30',
       endTime: '22:30',
       equipment: byName['Telescope-02']._id,
-      observer: 'Dr. Ananya Rao',
+      observer: usersByEmail['observer@astrowatch.com']._id,
       priority: 'Medium',
       status: 'Scheduled',
       notes: '',
@@ -224,7 +259,7 @@ const seedData = async () => {
       startTime: '19:00',
       endTime: '20:00',
       equipment: byName['Telescope-01']._id,
-      observer: 'Karthik S',
+      observer: usersByEmail['meera.obs@astrowatch.com']._id,
       priority: 'Low',
       status: 'Scheduled',
       notes: '',
@@ -236,7 +271,7 @@ const seedData = async () => {
       startTime: '22:00',
       endTime: '23:30',
       equipment: byName['Radio Telescope-01']._id,
-      observer: 'Dr. Vikram Iyer',
+      observer: usersByEmail['vikram.obs@astrowatch.com']._id,
       priority: 'High',
       status: 'Completed',
       notes: 'Successful data capture, signal strength nominal.',
@@ -248,7 +283,7 @@ const seedData = async () => {
       startTime: '18:00',
       endTime: '19:00',
       equipment: byName['CCD Camera-01']._id,
-      observer: 'Priya Nair',
+      observer: usersByEmail['observer@astrowatch.com']._id,
       priority: 'Medium',
       status: 'In Progress',
       notes: '',
@@ -260,7 +295,7 @@ const seedData = async () => {
       startTime: '20:00',
       endTime: '21:00',
       equipment: byName['Spectrograph-01']._id,
-      observer: 'Ravi Kumar',
+      observer: usersByEmail['observer@astrowatch.com']._id,
       priority: 'Medium',
       status: 'Completed',
       notes: 'Spectral analysis completed successfully.',
@@ -269,8 +304,9 @@ const seedData = async () => {
   console.log(`${observationDocs.length} observations seeded.`);
 
   console.log('\nSeed complete!');
-  console.log('Demo Admin login -> email: admin@astrowatch.com | password: admin123');
-  console.log('Demo Staff login -> email: staff@astrowatch.com | password: staff123');
+  console.log('Admin      -> admin@astrowatch.com / admin123');
+  console.log('Technician -> technician@astrowatch.com / tech123');
+  console.log('Observer   -> observer@astrowatch.com / observer123');
 };
 
 const run = async () => {
