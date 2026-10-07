@@ -118,18 +118,18 @@ export default function MaintenanceForm() {
 
   if (!isAdmin) {
     return (
-      <div className="mx-auto max-w-2xl">
-        <Link to="/maintenance" className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"><ArrowLeft size={15} /> Back to Maintenance</Link>
-        <div className="aw-card p-6">
+      <div className="mx-auto max-w-3xl">
+        <Link to="/maintenance" className="aw-back-link"><ArrowLeft size={15} /> Back to Maintenance</Link>
+        <div className="aw-card overflow-hidden p-6 sm:p-7">
           <div className="mb-5 flex items-start gap-3">
-            <div className="rounded-lg bg-sky-50 p-2 text-primary-600"><Wrench size={20} /></div>
+            <div className="rounded-xl bg-cyan-50 p-2.5 text-cyan-600 ring-1 ring-cyan-100"><Wrench size={20} /></div>
             <div>
               <h2 className="text-lg font-semibold text-slate-900">Update Assigned Task</h2>
               <p className="text-sm text-slate-500">You can update only the status and notes for this assigned maintenance task.</p>
             </div>
           </div>
 
-          <div className="mb-6 grid gap-3 rounded-lg bg-slate-50 p-4 text-sm sm:grid-cols-2">
+          <div className="mb-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm sm:grid-cols-2">
             <div><span className="text-slate-400">Task</span><p className="font-medium text-slate-800">{taskDetails?.title}</p></div>
             <div><span className="text-slate-400">Equipment</span><p className="font-medium text-slate-800">{taskDetails?.equipment?.name}</p></div>
             <div><span className="text-slate-400">Priority</span><div className="mt-1"><StatusBadge value={taskDetails?.priority} /></div></div>
@@ -159,14 +159,14 @@ export default function MaintenanceForm() {
 
   const unavailable = equipmentOptions.length === 0 || technicians.length === 0;
   return (
-    <div className="mx-auto max-w-2xl">
-      <Link to="/maintenance" className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"><ArrowLeft size={15} /> Back to Maintenance</Link>
-      <div className="aw-card p-6">
+    <div className="mx-auto max-w-3xl">
+      <Link to="/maintenance" className="aw-back-link"><ArrowLeft size={15} /> Back to Maintenance</Link>
+      <div className="aw-card overflow-hidden p-6 sm:p-7">
         <h2 className="mb-1 text-lg font-semibold text-slate-900">{isEdit ? 'Edit Maintenance Task' : 'Add Maintenance Task'}</h2>
         <p className="mb-6 text-sm text-slate-500">{isEdit ? 'Update task details or assignment.' : 'Schedule maintenance and assign it to a registered Technician.'}</p>
 
         {unavailable ? (
-          <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
+          <p className="rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-700">
             {equipmentOptions.length === 0 ? 'Add equipment before scheduling maintenance.' : 'No Technician accounts exist yet. Register a Technician account first.'}
           </p>
         ) : (

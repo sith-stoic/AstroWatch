@@ -101,12 +101,12 @@ export default function EquipmentForm() {
   if (loading) return <Loader label="Loading equipment..." />;
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <Link to="/equipment" className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
+    <div className="mx-auto max-w-3xl">
+      <Link to="/equipment" className="aw-back-link">
         <ArrowLeft size={15} /> Back to Equipment
       </Link>
 
-      <div className="aw-card p-6">
+      <div className="aw-card overflow-hidden p-6 sm:p-7">
         <h2 className="mb-1 text-lg font-semibold text-slate-900">{isEdit ? 'Edit Equipment' : 'Add Equipment'}</h2>
         <p className="mb-6 text-sm text-slate-500">
           {isEdit ? 'Update the details for this equipment item.' : 'Register a new equipment item in the observatory inventory.'}

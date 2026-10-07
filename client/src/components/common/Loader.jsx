@@ -1,11 +1,12 @@
 import { Loader2 } from 'lucide-react';
 
-// Small reusable spinner used for loading states across the app.
 export default function Loader({ label = 'Loading...', size = 20 }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-8 text-slate-500">
-      <Loader2 size={size} className="animate-spin text-primary-600" />
-      <span className="text-sm">{label}</span>
+    <div className="flex min-h-[180px] flex-col items-center justify-center gap-3 py-8 text-slate-500">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+        <Loader2 size={size} className="animate-spin" />
+      </div>
+      <span className="text-sm font-medium text-slate-500">{label}</span>
     </div>
   );
 }

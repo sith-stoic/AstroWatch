@@ -16,8 +16,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           toastOptions={{
             duration: 3500,
             style: {
-              fontSize: '0.875rem',
-              borderRadius: '0.625rem',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              borderRadius: '0.875rem',
+              border: '1px solid rgba(226, 232, 240, 0.9)',
+              background: 'rgba(255, 255, 255, 0.96)',
+              color: '#334155',
+              boxShadow: '0 14px 36px rgba(15, 23, 42, 0.13)',
+              padding: '12px 14px',
             },
           }}
         />

@@ -133,18 +133,18 @@ export default function ObservationForm() {
 
   if (!isAdmin) {
     return (
-      <div className="mx-auto max-w-2xl">
-        <Link to="/observations" className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"><ArrowLeft size={15} /> Back to Observations</Link>
-        <div className="aw-card p-6">
+      <div className="mx-auto max-w-3xl">
+        <Link to="/observations" className="aw-back-link"><ArrowLeft size={15} /> Back to Observations</Link>
+        <div className="aw-card overflow-hidden p-6 sm:p-7">
           <div className="mb-5 flex items-start gap-3">
-            <div className="rounded-lg bg-violet-50 p-2 text-violet-600"><Target size={20} /></div>
+            <div className="rounded-xl bg-violet-50 p-2.5 text-violet-600 ring-1 ring-violet-100"><Target size={20} /></div>
             <div>
               <h2 className="text-lg font-semibold text-slate-900">Update Assigned Observation</h2>
               <p className="text-sm text-slate-500">You can update only the observation status and notes. Scheduling details are controlled by Admin.</p>
             </div>
           </div>
 
-          <div className="mb-6 grid gap-3 rounded-lg bg-slate-50 p-4 text-sm sm:grid-cols-2">
+          <div className="mb-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm sm:grid-cols-2">
             <div><span className="text-slate-400">Target</span><p className="font-medium text-slate-800">{observationDetails?.target}</p></div>
             <div><span className="text-slate-400">Equipment</span><p className="font-medium text-slate-800">{observationDetails?.equipment?.name}</p></div>
             <div><span className="text-slate-400">Time</span><p className="font-medium text-slate-800">{toDateInput(observationDetails?.date)} · {observationDetails?.startTime}–{observationDetails?.endTime}</p></div>
@@ -174,25 +174,25 @@ export default function ObservationForm() {
 
   const unavailable = equipmentOptions.length === 0 || observers.length === 0;
   return (
-    <div className="mx-auto max-w-2xl">
-      <Link to="/observations" className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"><ArrowLeft size={15} /> Back to Observations</Link>
-      <div className="aw-card p-6">
+    <div className="mx-auto max-w-3xl">
+      <Link to="/observations" className="aw-back-link"><ArrowLeft size={15} /> Back to Observations</Link>
+      <div className="aw-card overflow-hidden p-6 sm:p-7">
         <h2 className="mb-1 text-lg font-semibold text-slate-900">{isEdit ? 'Edit Observation' : 'Schedule Observation'}</h2>
         <p className="mb-6 text-sm text-slate-500">{isEdit ? 'Update observation details or assignment.' : 'Assign a registered Observer. AstroWatch checks equipment status, maintenance conflicts, and time overlaps automatically.'}</p>
 
         {conflictMessage && (
-          <div className="mb-5 flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm text-red-700">
+          <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-700">
             <AlertTriangle size={17} className="mt-0.5 flex-shrink-0" /><div><p className="font-medium">Scheduling conflict</p><p className="mt-0.5">{conflictMessage}</p></div>
           </div>
         )}
         {warningMessage && (
-          <div className="mb-5 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-700">
+          <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-700">
             <AlertTriangle size={17} className="mt-0.5 flex-shrink-0" /><div><p className="font-medium">Scheduled with a warning</p><p className="mt-0.5">{warningMessage}</p></div>
           </div>
         )}
 
         {unavailable ? (
-          <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
+          <p className="rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-700">
             {equipmentOptions.length === 0 ? 'Add equipment before scheduling an observation.' : 'No Observer accounts exist yet. Register an Observer account first.'}
           </p>
         ) : (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Pencil, Trash2, Telescope, MapPin } from 'lucide-react';
+import { MapPin, Pencil, Plus, Search, Telescope, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import equipmentService from '../services/equipmentService';
 import StatusBadge from '../components/common/StatusBadge';
@@ -47,7 +47,7 @@ export default function Equipment() {
   };
 
   useEffect(() => {
-    const timeout = setTimeout(fetchData, 300); // light debounce for search
+    const timeout = setTimeout(fetchData, 300);
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, statusFilter, typeFilter]);
@@ -69,36 +69,38 @@ export default function Equipment() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-1 flex-wrap items-center gap-3">
-          <div className="relative w-full max-w-xs">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by name or location..."
-              className="aw-input pl-9"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <select className="aw-input w-auto" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="">All statuses</option>
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-          <select className="aw-input w-auto" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-            <option value="">All types</option>
-            {TYPE_OPTIONS.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Asset registry</p>
+          <h2 className="mt-1 font-display text-xl font-semibold tracking-[-0.02em] text-slate-900">Observatory equipment</h2>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">Track availability, physical condition, and location for every registered observatory asset.</p>
         </div>
         {isAdmin && (
-          <Link to="/equipment/add" className="aw-btn-primary">
+          <Link to="/equipment/add" className="aw-btn-primary self-start sm:self-auto">
             <Plus size={16} /> Add Equipment
           </Link>
         )}
+      </div>
+
+      <div className="aw-card flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="relative w-full sm:max-w-sm">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input type="text" placeholder="Search by name or location..." className="aw-input pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
+          <select className="aw-input sm:w-auto" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <option value="">All statuses</option>
+            {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <select className="aw-input sm:w-auto" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+            <option value="">All equipment types</option>
+            {TYPE_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <span className="h-2 w-2 rounded-full bg-primary-400" />
+          {loading ? 'Refreshing inventory...' : `${items.length} record${items.length === 1 ? '' : 's'} shown`}
+        </div>
       </div>
 
       <div className="aw-card overflow-hidden">
@@ -109,55 +111,41 @@ export default function Equipment() {
             icon={Telescope}
             title="No equipment found"
             message="Try adjusting your filters, or add a new item."
-            action={isAdmin ? (
-              <Link to="/equipment/add" className="aw-btn-primary">
-                <Plus size={16} /> Add Equipment
-              </Link>
-            ) : null}
+            action={isAdmin ? <Link to="/equipment/add" className="aw-btn-primary"><Plus size={16} /> Add Equipment</Link> : null}
           />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-400">
+              <thead className="border-b border-slate-200/80 bg-slate-50/80 text-[10px] uppercase tracking-[0.11em] text-slate-400">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Name</th>
-                  <th className="px-5 py-3 font-medium">Type</th>
-                  <th className="px-5 py-3 font-medium">Location</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium">Condition</th>
-                  {isAdmin && <th className="px-5 py-3 font-medium text-right">Actions</th>}
+                  <th className="px-5 py-3.5 font-bold">Name</th>
+                  <th className="px-5 py-3.5 font-bold">Type</th>
+                  <th className="px-5 py-3.5 font-bold">Location</th>
+                  <th className="px-5 py-3.5 font-bold">Status</th>
+                  <th className="px-5 py-3.5 font-bold">Condition</th>
+                  {isAdmin && <th className="px-5 py-3.5 text-right font-bold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {items.map((item) => (
-                  <tr key={item._id} className="hover:bg-slate-50/70">
-                    <td className="px-5 py-3.5 font-medium text-slate-800">{item.name}</td>
-                    <td className="px-5 py-3.5 text-slate-600">{item.type}</td>
-                    <td className="px-5 py-3.5 text-slate-600">
-                      <span className="flex items-center gap-1.5">
-                        <MapPin size={13} className="text-slate-400" /> {item.location}
-                      </span>
+                  <tr key={item._id} className="aw-table-row">
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+                          <Telescope size={16} />
+                        </div>
+                        <span className="font-semibold text-slate-800">{item.name}</span>
+                      </div>
                     </td>
-                    <td className="px-5 py-3.5"><StatusBadge value={item.status} /></td>
-                    <td className="px-5 py-3.5"><StatusBadge value={item.condition} /></td>
+                    <td className="px-5 py-4 text-slate-600">{item.type}</td>
+                    <td className="px-5 py-4 text-slate-600"><span className="flex items-center gap-1.5"><MapPin size={13} className="text-slate-400" /> {item.location}</span></td>
+                    <td className="px-5 py-4"><StatusBadge value={item.status} /></td>
+                    <td className="px-5 py-4"><StatusBadge value={item.condition} /></td>
                     {isAdmin && (
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link
-                            to={`/equipment/edit/${item._id}`}
-                            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary-600"
-                            title="Edit"
-                          >
-                            <Pencil size={15} />
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => setDeleteTarget(item)}
-                            className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600"
-                            title="Delete"
-                          >
-                            <Trash2 size={15} />
-                          </button>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center justify-end gap-1">
+                          <Link to={`/equipment/edit/${item._id}`} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-primary-50 hover:text-primary-600" title="Edit"><Pencil size={15} /></Link>
+                          <button type="button" onClick={() => setDeleteTarget(item)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>
                         </div>
                       </td>
                     )}
@@ -170,14 +158,7 @@ export default function Equipment() {
       </div>
 
       {isAdmin && (
-        <ConfirmModal
-          open={!!deleteTarget}
-          title="Delete equipment?"
-          message={`This will permanently remove "${deleteTarget?.name}". This action cannot be undone.`}
-          onCancel={() => setDeleteTarget(null)}
-          onConfirm={handleDelete}
-          loading={deleting}
-        />
+        <ConfirmModal open={!!deleteTarget} title="Delete equipment?" message={`This will permanently remove "${deleteTarget?.name}". This action cannot be undone.`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />
       )}
     </div>
   );

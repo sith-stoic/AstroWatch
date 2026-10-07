@@ -1,10 +1,8 @@
-// Lightweight horizontal bar breakdown of equipment by status - built with
-// plain CSS instead of a charting library to keep the dependency list small.
-const STATUS_COLORS = {
-  Operational: 'bg-emerald-500',
-  Warning: 'bg-amber-500',
-  Offline: 'bg-slate-400',
-  Maintenance: 'bg-blue-500',
+const STATUS_META = {
+  Operational: { bar: 'bg-emerald-500', dot: 'bg-emerald-500', text: 'text-emerald-700' },
+  Warning: { bar: 'bg-amber-500', dot: 'bg-amber-500', text: 'text-amber-700' },
+  Offline: { bar: 'bg-slate-400', dot: 'bg-slate-400', text: 'text-slate-600' },
+  Maintenance: { bar: 'bg-primary-500', dot: 'bg-primary-500', text: 'text-primary-700' },
 };
 
 export default function EquipmentStatusChart({ data = [] }) {
@@ -15,21 +13,34 @@ export default function EquipmentStatusChart({ data = [] }) {
   }
 
   return (
-    <div className="space-y-3">
-      {data.map(({ _id: status, count }) => (
-        <div key={status}>
-          <div className="mb-1 flex items-center justify-between text-sm">
-            <span className="text-slate-600">{status}</span>
-            <span className="font-medium text-slate-800">{count}</span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-            <div
-              className={`h-full rounded-full ${STATUS_COLORS[status] || 'bg-slate-400'}`}
-              style={{ width: `${(count / total) * 100}%` }}
-            />
-          </div>
-        </div>
-      ))}
+    <div className="space-y-4">
+      <div className="flex h-2.5 overflow-hidden rounded-full bg-slate-100">
+        {data.map(({ _id: status, count }) => (
+          <div
+            key={status}
+            className={`${STATUS_META[status]?.bar || 'bg-slate-400'} transition-all duration-700`}
+            style={{ width: `${(count / total) * 100}%` }}
+            title={`${status}: ${count}`}
+          />
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 gap-2.5">
+        {data.map(({ _id: status, count }) => {
+          const meta = STATUS_META[status] || STATUS_META.Offline;
+          return (
+            <div key={status} className="rounded-xl border border-slate-100 bg-slate-50/70 px-3 py-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className={`h-2 w-2 flex-shrink-0 rounded-full ${meta.dot}`} />
+                  <span className="truncate text-xs font-medium text-slate-600">{status}</span>
+                </div>
+                <span className={`text-sm font-bold ${meta.text}`}>{count}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

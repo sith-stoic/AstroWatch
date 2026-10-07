@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Telescope, Loader2, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, Target, Wrench } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import AuthVisual from '../components/common/AuthVisual';
+import BrandMark from '../components/common/BrandMark';
+
+const DEMO_ROLES = [
+  { id: 'admin', label: 'Admin', icon: ShieldCheck, email: 'admin@astrowatch.com', password: 'admin123' },
+  { id: 'technician', label: 'Technician', icon: Wrench, email: 'technician@astrowatch.com', password: 'tech123' },
+  { id: 'observer', label: 'Observer', icon: Target, email: 'observer@astrowatch.com', password: 'observer123' },
+];
 
 export default function Login() {
   const { login } = useAuth();
@@ -37,66 +45,110 @@ export default function Login() {
     }
   };
 
-  const fillDemo = (role) => {
-    if (role === 'admin') setForm({ email: 'admin@astrowatch.com', password: 'admin123' });
-    if (role === 'technician') setForm({ email: 'technician@astrowatch.com', password: 'tech123' });
-    if (role === 'observer') setForm({ email: 'observer@astrowatch.com', password: 'observer123' });
+  const fillDemo = (roleId) => {
+    const role = DEMO_ROLES.find((item) => item.id === roleId);
+    if (role) setForm({ email: role.email, password: role.password });
+    setErrors({});
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy-950 px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 flex flex-col items-center text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600">
-            <Telescope size={26} className="text-white" strokeWidth={1.8} />
-          </div>
-          <h1 className="font-display text-2xl font-semibold text-white">AstroWatch</h1>
-          <p className="mt-1 text-sm text-slate-400">Space Observatory Monitoring &amp; Management</p>
-        </div>
+    <div className="flex min-h-screen bg-slate-50">
+      <AuthVisual eyebrow="Mission-ready operations" />
 
-        <div className="aw-card p-7">
-          <h2 className="mb-1 text-lg font-semibold text-slate-900">Sign in</h2>
-          <p className="mb-6 text-sm text-slate-500">Enter your credentials to access the observatory console.</p>
-
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            <div>
-              <label className="aw-label" htmlFor="email">Email</label>
-              <input id="email" type="email" className="aw-input" placeholder="you@astrowatch.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-              {errors.email && <p className="aw-error-text">{errors.email}</p>}
-            </div>
-
-            <div>
-              <label className="aw-label" htmlFor="password">Password</label>
-              <div className="relative">
-                <input id="password" type={showPassword ? 'text' : 'password'} className="aw-input pr-10" placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-                <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" tabIndex={-1}>
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+      <main className="relative flex min-h-screen flex-1 items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-12">
+        <div className="pointer-events-none absolute right-[-12%] top-[-12%] h-72 w-72 rounded-full bg-primary-100/70 blur-3xl" />
+        <div className="aw-auth-enter relative z-10 w-full max-w-[470px]">
+          <div className="mb-7 lg:hidden">
+            <div className="flex items-center gap-3">
+              <BrandMark size={44} />
+              <div>
+                <p className="font-display text-lg font-semibold text-slate-950">AstroWatch</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">Observatory Operations</p>
               </div>
-              {errors.password && <p className="aw-error-text">{errors.password}</p>}
-            </div>
-
-            <button type="submit" className="aw-btn-primary w-full" disabled={submitting}>
-              {submitting ? <Loader2 size={16} className="animate-spin" /> : null}
-              {submitting ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-
-          <div className="mt-5 rounded-lg bg-sky-50 p-3.5 text-xs text-slate-600">
-            <p className="mb-1.5 font-medium text-slate-700">Demo credentials</p>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => fillDemo('admin')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">Admin</button>
-              <button type="button" onClick={() => fillDemo('technician')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">Technician</button>
-              <button type="button" onClick={() => fillDemo('observer')} className="rounded-md border border-sky-200 bg-white px-2.5 py-1 font-medium text-primary-700 hover:bg-sky-100">Observer</button>
             </div>
           </div>
 
-          <p className="mt-5 text-center text-sm text-slate-500">
-            Don&apos;t have an account?{' '}
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-700">Register</Link>
+          <div className="mb-7">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-primary-600">Secure access</p>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.035em] text-slate-950">Welcome back</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">Sign in to continue to your AstroWatch workspace.</p>
+          </div>
+
+          <div className="aw-card border-slate-200/70 p-6 sm:p-7">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+              <div>
+                <label className="aw-label" htmlFor="email">Email address</label>
+                <input
+                  id="email"
+                  type="email"
+                  className="aw-input"
+                  placeholder="you@astrowatch.com"
+                  autoComplete="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
+                {errors.email && <p className="aw-error-text">{errors.email}</p>}
+              </div>
+
+              <div>
+                <label className="aw-label" htmlFor="password">Password</label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    className="aw-input pr-11"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {errors.password && <p className="aw-error-text">{errors.password}</p>}
+              </div>
+
+              <button type="submit" className="aw-btn-primary mt-2 w-full py-3" disabled={submitting}>
+                {submitting ? <Loader2 size={16} className="animate-spin" /> : null}
+                {submitting ? 'Signing in...' : 'Sign in to AstroWatch'}
+                {!submitting && <ArrowRight size={16} />}
+              </button>
+            </form>
+
+            <div className="my-6 flex items-center gap-3">
+              <span className="h-px flex-1 bg-slate-200" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Demo access</span>
+              <span className="h-px flex-1 bg-slate-200" />
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              {DEMO_ROLES.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => fillDemo(id)}
+                  className="group flex flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-2 py-3 text-[11px] font-semibold text-slate-600 transition-all hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700"
+                >
+                  <Icon size={16} className="text-slate-400 transition-colors group-hover:text-primary-600" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-6 text-center text-sm text-slate-500">
+            Need an operational account?{' '}
+            <Link to="/register" className="font-semibold text-primary-600 transition-colors hover:text-primary-700">Create one</Link>
           </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

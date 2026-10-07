@@ -40,8 +40,9 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        card: '0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.06)',
-        popover: '0 8px 24px rgba(15, 23, 42, 0.12)',
+        card: '0 1px 2px rgba(15, 23, 42, 0.035), 0 8px 24px rgba(15, 23, 42, 0.055)',
+        'card-hover': '0 2px 4px rgba(15, 23, 42, 0.04), 0 14px 32px rgba(15, 23, 42, 0.09)',
+        popover: '0 14px 38px rgba(15, 23, 42, 0.16)',
       },
       borderRadius: {
         xl: '0.875rem',
