@@ -217,57 +217,89 @@
   }
 
   .aw-auth-shell {
-    background: #060810;
-  }
+  background: #05070d;
+}
 
-  .aw-auth-panel {
-    position: relative;
-    background:
-      radial-gradient(circle at 95% 2%, rgba(139, 92, 246, 0.11), transparent 22rem),
-      radial-gradient(circle at 10% 94%, rgba(34, 211, 238, 0.07), transparent 22rem),
-      #f4efe6;
-    color: #181622;
-  }
+.aw-auth-panel {
+  position: relative;
+  background:
+    radial-gradient(circle at 90% 8%, rgba(139, 92, 246, 0.16), transparent 25rem),
+    radial-gradient(circle at 8% 92%, rgba(34, 211, 238, 0.10), transparent 24rem),
+    linear-gradient(145deg, #090c14 0%, #0b101a 48%, #090d16 100%);
+  color: #f5f7fb;
+}
 
-  .aw-auth-panel .aw-card {
-    border-color: rgba(32, 26, 45, 0.11);
-    background: rgba(255, 253, 248, 0.9);
-    box-shadow: 0 25px 65px rgba(41, 32, 57, 0.12);
-    backdrop-filter: blur(16px);
-  }
+/* subtle stars / atmosphere on the right panel */
+.aw-auth-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,.32) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 38%, rgba(167,139,250,.32) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 45% 75%, rgba(103,232,249,.28) 0 1px, transparent 1.5px);
+  background-size: 190px 190px, 250px 250px, 320px 320px;
+}
 
-  .aw-auth-panel .aw-input {
-    border-color: rgba(50, 42, 61, 0.15);
-    background: rgba(255,255,255,.72);
-    color: #1e1b29;
-    box-shadow: 0 1px 0 rgba(255,255,255,.78);
-    color-scheme: light;
-  }
+.aw-auth-panel .aw-card {
+  border: 1px solid rgba(167, 139, 250, 0.14);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 23, 36, 0.92),
+      rgba(10, 14, 24, 0.96)
+    );
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.38),
+    0 0 60px rgba(124, 58, 237, 0.055);
+  backdrop-filter: blur(20px);
+}
 
-  .aw-auth-panel .aw-input::placeholder { color: #9a91a4; }
-  .aw-auth-panel .aw-input:hover { border-color: rgba(82,68,99,.27); }
-  .aw-auth-panel .aw-input:focus {
-    border-color: rgba(124,58,237,.52);
-    box-shadow: 0 0 0 4px rgba(124,58,237,.085);
-  }
+.aw-auth-panel .aw-input {
+  border: 1px solid rgba(148, 163, 184, 0.17);
+  background: rgba(4, 7, 14, 0.64);
+  color: #f1f5f9;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+  color-scheme: dark;
+}
 
-  .aw-auth-panel .aw-label { color: #4c4656; }
-  .aw-auth-panel .aw-btn-secondary {
-    border-color: rgba(45, 38, 54, 0.14);
-    background: rgba(255,255,255,.58);
-    color: #413a4b;
-  }
+.aw-auth-panel .aw-input::placeholder {
+  color: #68738a;
+}
 
-  .aw-auth-panel .aw-btn-secondary:hover {
-    border-color: rgba(124,58,237,.24);
-    background: #fffdf8;
-    color: #5b21b6;
-  }
+.aw-auth-panel .aw-input:hover {
+  border-color: rgba(167, 139, 250, 0.30);
+}
 
-  .aw-auth-kicker {
-    @apply text-[10px] font-bold uppercase tracking-[0.2em];
-    color: #7c3aed;
-  }
+.aw-auth-panel .aw-input:focus {
+  border-color: rgba(167, 139, 250, 0.72);
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, 0.11),
+    0 0 24px rgba(124, 58, 237, 0.055);
+}
+
+.aw-auth-panel .aw-label {
+  color: #cbd3e1;
+}
+
+.aw-auth-panel .aw-btn-secondary {
+  border-color: rgba(148, 163, 184, 0.18);
+  background: rgba(255,255,255,.035);
+  color: #dce2ec;
+}
+
+.aw-auth-panel .aw-btn-secondary:hover {
+  border-color: rgba(167, 139, 250, 0.34);
+  background: rgba(139, 92, 246, 0.10);
+  color: #ffffff;
+}
+
+.aw-auth-kicker {
+  @apply text-[10px] font-bold uppercase tracking-[0.2em];
+  color: #a78bfa;
+}
 
   .aw-cosmic-text {
     background: linear-gradient(100deg, #ddd6fe 8%, #c4b5fd 42%, #67e8f9 92%);
@@ -382,6 +414,9 @@
 
 .aw-auth-panel .aw-btn-primary,
 .aw-auth-panel .aw-btn-secondary {
-  --tw-ring-offset-color: #f4efe6;
+  --tw-ring-offset-color: #090d16;
 }
-.aw-auth-panel .aw-error-text { color: #be123c; }
+
+.aw-auth-panel .aw-error-text {
+  color: #fb7185;
+}
